@@ -8,5 +8,6 @@ curl -sS https://webinstall.dev/k9s | bash
 sudo apt-get update && sudo apt-get install -y ripgrep fd-find build-essential ncurses-term
 # 4. Configure LazyVim
 if [ ! -d "$HOME/.config/nvim" ]; then
-  git clone https://github.com/LazyVim/starter $HOME/.config/nvim rm -rf $HOME/.config/nvim/.git
+  git clone https://github.com/LazyVim/starter $HOME/.config/nvim
+  rm -rf $HOME/.config/nvim/.git
 fi

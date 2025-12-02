@@ -1,0 +1,18 @@
+name: Lint & Validate
+
+on: [push, pull_request]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Kubeconform
+        uses: yannh/kubeconform-action@v1
+        with:
+          kubeconform_version: latest
+
+      - name: Run Kubeconform
+        run: kubeconform -summary -ignore-missing-schemas kubernetes/

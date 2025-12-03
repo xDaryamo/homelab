@@ -12,7 +12,7 @@ jobs:
       - name: Set up Kubeconform
         uses: bmuschko/setup-kubeconform@v1
         with:
-          kubeconform-version: "latest"
+          kubeconform-version: "0.6.7"
 
       - name: Validate Kubernetes manifests
         run: kubeconform -summary -ignore-missing-schemas kubernetes/

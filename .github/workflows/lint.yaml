@@ -9,10 +9,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup Kubeconform
-        uses: yannh/kubeconform-action@v1
+      - name: Set up Kubeconform
+        uses: bmuschko/setup-kubeconform@v1
         with:
-          kubeconform_version: latest
+          kubeconform-version: "latest"
 
-      - name: Run Kubeconform
+      - name: Validate Kubernetes manifests
         run: kubeconform -summary -ignore-missing-schemas kubernetes/

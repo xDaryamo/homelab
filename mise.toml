@@ -1,0 +1,21 @@
+[tools]
+uv = "latest"
+pipx = "latest"
+ansible = "latest"
+kubectl = "latest"
+helm = "latest"
+k9s = "latest"
+kustomize = "latest"
+flux2 = "2.7.5"
+sops = "latest"
+age = "latest"
+yq = "latest"
+jq = "latest"
+node = "lts"
+neovim = "latest"
+python = "latest"
+
+[settings] 
+python.uv_venv_auto = true
+pipx.uvx = true
+

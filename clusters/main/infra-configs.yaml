@@ -4,5 +4,12 @@ metadata:
   name: infra-configs
   namespace: flux-system
 spec:
+  interval: 10m0s
+  path: ./infrastructure/configs
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+
   dependsOn:
     - name: infra-controllers

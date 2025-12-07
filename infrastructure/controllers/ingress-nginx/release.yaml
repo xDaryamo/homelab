@@ -21,11 +21,11 @@ spec:
         kind: HelmRepository
         name: ingress-nginx
         namespace: ingress-nginx
-      values:
-        controller:
-          service:
-            type: LoadBalancer
-            externalTrafficPolicy: Local
-        ingressClassResource:
-          default: true
-        watchIngressWithoutClass: true
+  values:
+    controller:
+      service:
+        type: LoadBalancer
+        externalTrafficPolicy: Local
+      ingressClassResource:
+        default: true
+      watchIngressWithoutClass: true

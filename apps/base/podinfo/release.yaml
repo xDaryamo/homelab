@@ -1,0 +1,23 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: podinfo
+spec:
+  interval: 50m
+
+  install:
+    remediation:
+      retries: 3
+
+  chart:
+    spec:
+      chart: podinfo
+      version: "6.x"
+      sourceRef:
+        kind: HelmRepository
+        name: podinfo
+
+  values:
+    replicaCount: 1
+    ui:
+      message: "Homelab Base"

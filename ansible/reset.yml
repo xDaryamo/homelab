@@ -1,0 +1,36 @@
+- name: Nuke K3s Cluster
+  hosts: k3s_cluster
+  become: true
+  gather_facts: true
+  tasks:
+    - name: Uninstall K3s Agent (Workers)
+      command: /usr/local/bin/k3s-agent-uninstall.sh
+      ignore_errors: true
+      when: "'workers' in group_names"
+
+    - name: Uninstall K3s Server (Control Plane)
+      command: /usr/local/bin/k3s-uninstall.sh
+      ignore_errors: true
+      when: "'control_plane' in group_names"
+
+    - name: Clean up CNI configs
+      file:
+        path: /etc/cni/net.d
+        state: absent
+
+    - name: clean up residue directories
+      file:
+        path: "{{ item }}"
+        state: absent
+      loop:
+        - /etc/cni/net.d       
+        - /opt/cni/bin        
+        - /var/lib/rancher   
+        - /etc/rancher      
+        - /var/lib/kubelet 
+      ignore_errors: true
+
+    - name: Reboot to clear network interfaces
+      reboot:
+        msg: "Rebooting nodes"
+        pre_reboot_delay: 5

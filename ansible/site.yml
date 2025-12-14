@@ -1,0 +1,67 @@
+---
+- name: Build K3s Cluster
+  hosts: k3s_cluster # parent group
+  gather_facts: true
+  become: true #sudo
+
+  pre_tasks:
+    - name: Set Control Plane Variable
+      set_fact:
+        k3s_control_node: true
+      when: "'control_plane' in group_names"
+
+    - name: Set Worker Variable
+      set_fact:
+        k3s_control_node: false
+      when: "'workers' in group_names"
+
+  vars:
+    k3s_become: true
+
+    k3s_release_version: "v1.34.2+k3s1"
+
+    k3s_registration_address: "192.168.1.24"
+
+
+    k3s_server:
+
+      disable:
+        - traefik
+        - servicelb
+
+      # Disabling default CNI
+      flannel-backend: 'none'
+      disable-network-policy: true
+
+      # Replace kube-proxy for pure eBPF performance
+      disable-kube-proxy: true
+
+      # Since PC 1 has 16GB of RAM, it would be a waste not to use it for the apps!
+      node-taint: []
+      
+
+    k3s_agent: {}
+
+  roles:
+    - role: xanmanning.k3s
+
+  post_tasks:
+    - name: Install Cilium
+      when: k3s_control_node
+      shell: |
+        curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
+        
+        helm repo add cilium https://helm.cilium.io/
+        helm repo update
+
+        helm upgrade --install cilium cilium/cilium --version 1.18.4 \
+          --namespace kube-system \
+          --create-namespace \
+          --set k8sServiceHost={{ k3s_registration_address }} \
+          --set k8sServicePort=6443 \
+          --set kubeProxyReplacement=true \
+          --set l2announcements.enabled=true \
+          --set hubble.relay.enabled=true \
+          --set hubble.ui.enabled=true
+      environment:
+        KUBECONFIG: /etc/rancher/k3s/k3s.yaml

@@ -4,9 +4,5 @@ resources:
   - ../../base/podinfo
   - ingress.yaml
 
-namespace: podinfo-staging
-
-nameSuffix: -staging
-
 patches:
-  - path: message.yaml
+  - path: scaling.yaml

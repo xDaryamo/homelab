@@ -19,4 +19,4 @@ spec:
       - image: ghcr.io/stefanprodan/podinfo:6.9.4
         name: podinfo
         ports:
-            -containerPort: 9898
+            - containerPort: 9898

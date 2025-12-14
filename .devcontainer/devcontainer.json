@@ -1,17 +1,12 @@
 {
-  "name": "Homelab",
-  "image": "mcr.microsoft.com/devcontainers/base:debian",
-  "features": {
-    "ghcr.io/devcontainers/features/common-utils:2": {
-      "installZsh": false,
-      "configureZshAsDefaultShell": false,
-      "upgradePackages": true
-    },
-    "ghcr.io/devcontainers-extra/features/ansible:2": {},
-    "ghcr.io/devcontainers/features/kubectl-helm-minikube:1": {
-	"minikube": "none"
-    },
-    "ghcr.io/duduribeiro/devcontainer-features/neovim:1": {}
+  "name": "homelab",
+  "build": {
+    "dockerfile": "Dockerfile",
+    "context": ".."
   },
-  "postCreateCommand": "bash .devcontainer/setup.sh"  
+  "containerEnv": {
+    "TERM": "xterm-256color"
+  },
+  "postCreateCommand": "bash .devcontainer/scripts/setup.sh",
+  "remoteUser": "vscode"
 }

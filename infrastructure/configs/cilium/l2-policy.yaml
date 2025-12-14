@@ -1,0 +1,14 @@
+apiVersion: "cilium.io/v2"
+kind: CiliumL2AnnouncementPolicy
+metadata:
+  name: default-l2-policy
+  namespace: kube-system
+spec:
+  nodeSelector: {}
+
+  interfaces:
+    - ^eth[0-9]+
+    - ^en.*
+    - ^eth.*
+
+  loadBalancerIPs: true

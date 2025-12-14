@@ -14,6 +14,7 @@ jq = "latest"
 node = "lts"
 neovim = "latest"
 python = "latest"
+cilium-cli="latest"
 
 [settings] 
 python.uv_venv_auto = true

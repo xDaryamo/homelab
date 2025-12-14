@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: podinfo
+  name: podinfo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: podinfo
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        app: podinfo
+    spec:
+      containers:
+      - image: ghcr.io/stefanprodan/podinfo:6.9.4
+        name: podinfo
+        ports:
+            -containerPort: 9898

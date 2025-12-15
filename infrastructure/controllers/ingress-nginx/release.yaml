@@ -4,15 +4,15 @@ metadata:
   name: ingress-nginx
   namespace: ingress-nginx
 spec:
-  interval: 12h
+  interval: 1h
   install:
-    strategy:
-      name: RetryOnFailure
-      retryInterval: 2m
+    crds: CreateReplace
+    remediation:
+      retries: 3
   upgrade:
-    strategy:
-      name: RetryOnFailure
-      retryInterval: 3m
+    crds: CreateReplace
+    remediation:
+      retries: 3
   chart:
     spec:
       chart: ingress-nginx

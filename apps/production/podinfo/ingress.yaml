@@ -3,8 +3,13 @@ kind: Ingress
 metadata:
   name: podinfo
   annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
 spec:
   ingressClassName: nginx
+  tls:
+    - hosts:
+      - podinfo.dariomazza.net 
+      secretName: podinfo-prod-tls
   rules:
     - host: podinfo.dariomazza.net
       http:

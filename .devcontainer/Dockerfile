@@ -10,6 +10,7 @@ RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
     ripgrep \
     fd-find \
     xclip \
+    tmux \
     # Ubuntu installs 'fd' as 'fdfind' due to a naming conflict.
     # We create a symlink because LazyVim/Neovim plugins expect the binary to be named 'fd'.
     && ln -s $(which fdfind) /usr/local/bin/fd \

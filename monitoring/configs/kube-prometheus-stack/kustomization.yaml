@@ -5,5 +5,7 @@ configMapGenerator:
   - name: monitoring-values
     files:
       - values.yaml
+generatorOptions:
+  disableNameSuffixHash: true
 resources:
   - grafana-secret.sops.yaml

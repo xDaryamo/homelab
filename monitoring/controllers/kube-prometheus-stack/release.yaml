@@ -11,6 +11,7 @@ spec:
       sourceRef:
         kind: HelmRepository
         name: prometheus-community
+        namespace: monitoring
       version: 80.x.x
   install:
     crds: CreateReplace

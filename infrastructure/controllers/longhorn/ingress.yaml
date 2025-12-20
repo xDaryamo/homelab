@@ -3,6 +3,8 @@ kind: Ingress
 metadata:
   name: longhorn-ingress
   namespace: longhorn
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
 spec:
   ingressClassName: nginx
   tls:
@@ -13,12 +15,10 @@ spec:
   - host: longhorn.dariomazza.net
     http:
       paths:
-      - backend:
+      - path: /
+        pathType: Prefix
+        backend:
           service:
             name: longhorn-frontend
             port:
               number: 80
-        path: /
-        pathType: Prefix
-status:
-  loadBalancer: {}

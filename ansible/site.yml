@@ -15,6 +15,43 @@
         k3s_control_node: false
       when: "'workers' in group_names"
 
+    - name: Install Longhorn dependencies
+      apt:
+        name:
+          - open-iscsi
+          - nfs-common
+          - util-linux
+        state: present
+        update_cache: true
+
+    - name: Ensure iscsid is started and enabled
+      systemd:
+        name: iscsid
+        state: started
+        enabled: true
+
+    - name: Prepare extra HDD for Longhorn
+      when: inventory_hostname == 'k8s-wp' 
+      block:
+        - name: Ensure HDD is formatted to ext4
+          filesystem:
+            fstype: ext4
+            dev: /dev/sda
+            force: no 
+
+        - name: Create mount directory
+          file:
+            path: /var/mnt/longhorn-hdd
+            state: directory
+            mode: '0755'
+
+        - name: Mount and add to fstab
+          mount:
+            path: /var/mnt/longhorn-hdd
+            src: /dev/sda
+            fstype: ext4
+            state: mounted
+
   vars:
     k3s_become: true
 

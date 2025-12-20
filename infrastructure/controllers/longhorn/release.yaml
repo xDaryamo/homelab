@@ -26,4 +26,7 @@ spec:
     defaultSettings:
       createDefaultDiskLabeledNodes: true
       storageReservedPercentageForDefaultDisk: 15
+      defaultLonghornStaticStorageClass: "longhorn-ssd"
+    persistence:
+      defaultClass: false
 

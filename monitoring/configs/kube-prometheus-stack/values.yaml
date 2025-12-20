@@ -18,8 +18,8 @@ grafana:
 
   persistence:
     enabled: true
-    storageClassName: "local-path"
-    size: 2Gi
+    size: 5Gi
+    storageClassName: "longhorn-ssd"
 
 
 
@@ -28,8 +28,8 @@ prometheus:
     storageSpec:
       volumeClaimTemplate:
         spec:
-          storageClassName: "local-path"
+          storageClassName: "longhorn-ssd"
           accessModes: ["ReadWriteOnce"]
           resources:
             requests:
-              storage: 10Gi
+              storage: 20Gi

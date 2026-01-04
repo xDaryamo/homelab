@@ -3,18 +3,10 @@
   "extends": [
     "config:recommended"
   ],
-  "dependencyDashboard": true,
   "flux": {
     "fileMatch": ["\\.yaml$"]
   },
   "kubernetes": {
     "fileMatch": ["\\.yaml$"]
-  },
-  "packageRules": [
-    {
-      "matchUpdateTypes": ["major", "minor", "patch", "pin", "digest"],
-      "automerge": false
-    }
-  ],
-  "timezone": "Europe/Rome"
+  }
 }

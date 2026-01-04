@@ -1,0 +1,45 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: renovate
+  namespace: renovate
+
+spec:
+  chart:
+    spec:
+      chart: renovate
+      reconcileStrategy: ChartVersion
+      sourceRef:
+        kind: HelmRepository
+        name: renovate
+        namespace: renovate
+      version: 45.65.0
+
+  install:
+    crds: CreateReplace
+    remediation:
+      retries: 3
+
+  upgrade:
+    crds: CreateReplace
+    remediation:
+      retries: 3
+
+  interval: 1h0m0s
+
+  values:
+    cronjob:
+      schedule: "@hourly"
+    renovate:
+      config: |
+        {
+          "platform": "github",
+          "repositories": ["xdaryamo/homelab"],
+          "autodiscover": false
+        }
+    envFrom:
+      - secretRef:
+          name: renovate-token-secret
+
+

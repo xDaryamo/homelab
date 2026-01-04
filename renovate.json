@@ -5,14 +5,24 @@
   ],
   "dependencyDashboard": true,
   "flux": {
-    "fileMatch": ["\\.yaml$"]
+    "managerFilePatterns": [
+      "/\\.yaml$/"
+    ]
   },
   "kubernetes": {
-    "fileMatch": ["\\.yaml$"]
+    "managerFilePatterns": [
+      "/\\.yaml$/"
+    ]
   },
   "packageRules": [
     {
-      "matchUpdateTypes": ["major", "minor", "patch", "pin", "digest"],
+      "matchUpdateTypes": [
+        "major",
+        "minor",
+        "patch",
+        "pin",
+        "digest"
+      ],
       "automerge": false
     }
   ],

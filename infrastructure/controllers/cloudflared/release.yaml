@@ -18,12 +18,14 @@ spec:
 
   values:
     replicaCount: 2
-    secretName: cloudflared-token-secret
-    tunnelName: k8s-homelab
-    ingress:
-      - hostname: "*.example.com"
-        service: http://ingress-nginx-controller.ingress-nginx.svc.cluster.local:80
-      - hostname: "dariomazza.net"
-        service: http://ingress-nginx-controller.ingress-nginx.svc.cluster.local:80
-      - service: http_status:404
+
+    cloudflare:
+      secretName: cloudflared-token-secret
+      tunnelName: k8s-homelab
+      ingress:
+        - hostname: "*.dariomazza.net"
+          service: http://ingress-nginx-controller.ingress-nginx.svc.cluster.local:80
+        - hostname: "dariomazza.net"
+          service: http://ingress-nginx-controller.ingress-nginx.svc.cluster.local:80
+        - service: http_status:404
 

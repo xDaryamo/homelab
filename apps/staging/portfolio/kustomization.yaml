@@ -4,6 +4,7 @@ namespace: portfolio-staging
 resources:
   - ../../base/portfolio
   - namespace.yaml
+  - ingress.yaml
 
 namePrefix: staging-
 

@@ -9,4 +9,4 @@ namePrefix: staging-
 
 images:
   - name: ghcr.io/xdaryamo/portfolio
-    newTag: latest
+    newTag: 1.0.6

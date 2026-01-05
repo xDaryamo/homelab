@@ -6,3 +6,4 @@ resources:
   - cert-manager
   - longhorn
   - renovate
+  - cloudflared

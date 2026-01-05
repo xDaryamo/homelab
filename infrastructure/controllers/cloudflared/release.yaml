@@ -1,0 +1,29 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: cloudflared
+  namespace: cloudflared
+spec:
+  chart:
+    spec:
+      chart: cloudflared
+      reconcileStrategy: ChartVersion
+      sourceRef:
+        kind: HelmRepository
+        name: cloudflared
+        namespace: cloudflared
+      version: 2.2.4
+
+  interval: 1h0m0s
+
+  values:
+    replicaCount: 2
+    secretName: cloudflared-token-secret
+    tunnelName: k8s-homelab
+    ingress:
+      - hostname: "*.example.com"
+        service: http://ingress-nginx-controller.ingress-nginx.svc.cluster.local:80
+      - hostname: "dariomazza.net"
+        service: http://ingress-nginx-controller.ingress-nginx.svc.cluster.local:80
+      - service: http_status:404
+

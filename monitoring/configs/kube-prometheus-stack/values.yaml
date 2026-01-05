@@ -1,4 +1,6 @@
 grafana:
+  deploymentStrategy:
+    type: Recreate
   admin:
     existingSecret: "grafana-secret"
     userKey: "admin-user"

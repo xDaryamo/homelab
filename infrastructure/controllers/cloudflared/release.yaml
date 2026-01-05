@@ -6,16 +6,13 @@ metadata:
 spec:
   chart:
     spec:
-      chart: cloudflare-tunnel
-      reconcileStrategy: ChartVersion
+      chart: cloudflare-tunnel-remote
+      version: 0.1.2
       sourceRef:
         kind: HelmRepository
-        name: cloudflared
+        name: cloudflared 
         namespace: cloudflared
-      version: 0.3.2
-
   interval: 1h0m0s
-
   values:
     env:
       - name: TUNNEL_TOKEN
@@ -23,14 +20,3 @@ spec:
           secretKeyRef:
             name: cloudflared-token-secret
             key: TUNNEL_TOKEN
-
-    cloudflare:
-      secretName: cloudflared-token-secret
-      tunnelName: k8s-homelab
-      ingress:
-        - hostname: "*.dariomazza.net"
-          service: http://ingress-nginx-controller.ingress-nginx.svc.cluster.local:80
-        - hostname: "dariomazza.net"
-          service: http://ingress-nginx-controller.ingress-nginx.svc.cluster.local:80
-        - service: http_status:404
-

@@ -1,0 +1,13 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: portfolio
+  namespace: portfolio-staging
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: staging.dariomazza.net
+  tls:
+    - hosts:
+      - staging.dariomazza.net      
+      secretName: portfolio-staging-tls

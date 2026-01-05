@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: portfolio
+  name: portfolio
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: portfolio
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        app: portfolio
+    spec:
+      containers:
+      - image: ghcr.io/xdaryamo/portfolio:1.0.4
+        name: portfolio
+        ports:
+            - containerPort: 4321

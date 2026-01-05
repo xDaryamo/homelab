@@ -12,24 +12,18 @@ spec:
         kind: HelmRepository
         name: cloudflared
         namespace: cloudflared
-      version: 2.2.4
+      version: 0.3.2
 
   interval: 1h0m0s
 
   values:
-    replica:
-      count: 2
-
-    tunnelConfig:
-      name: k8s-homelab
-    tunnelSecrets:
-          existingConfigJsonFileSecret:
-            name: "cloudflared-token-secret"
-            key: "TUNNEL_TOKEN"     
-    ingress:
-      - hostname: "*.dariomazza.net"
-        service: http://ingress-nginx-controller.ingress-nginx.svc.cluster.local:80
-      - hostname: "dariomazza.net"
-        service: http://ingress-nginx-controller.ingress-nginx.svc.cluster.local:80
-      - service: http_status:404
+    cloudflare:
+      secretName: cloudflared-token-secret
+      tunnelName: k8s-homelab
+      ingress:
+        - hostname: "*.dariomazza.net"
+          service: http://ingress-nginx-controller.ingress-nginx.svc.cluster.local:80
+        - hostname: "dariomazza.net"
+          service: http://ingress-nginx-controller.ingress-nginx.svc.cluster.local:80
+        - service: http_status:404
 

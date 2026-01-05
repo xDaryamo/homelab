@@ -5,7 +5,16 @@ metadata:
 spec:
   ingressClassName: nginx
   rules:
-    - host: staging.dariomazza.net
+      - host: staging.dariomazza.net
+        http:
+          paths:
+            - path: /
+              pathType: Prefix
+              backend:
+                service:
+                  name: portfolio
+                  port:
+                    number: 80
   tls:
     - hosts:
       - staging.dariomazza.net      

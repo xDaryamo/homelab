@@ -17,6 +17,13 @@ spec:
   interval: 1h0m0s
 
   values:
+    env:
+      - name: TUNNEL_TOKEN
+        valueFrom:
+          secretKeyRef:
+            name: cloudflared-token-secret
+            key: TUNNEL_TOKEN
+
     cloudflare:
       secretName: cloudflared-token-secret
       tunnelName: k8s-homelab

@@ -6,7 +6,7 @@ metadata:
 spec:
   chart:
     spec:
-      chart: cloudflared
+      chart: cloudflare-tunnel
       reconcileStrategy: ChartVersion
       sourceRef:
         kind: HelmRepository

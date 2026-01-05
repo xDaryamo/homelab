@@ -17,9 +17,14 @@ spec:
   interval: 1h0m0s
 
   values:
+    env:
+      - name: TUNNEL_TOKEN
+        valueFrom:
+          secretKeyRef:
+            name: cloudflared-token-secret
+            key: TUNNEL_TOKEN
+            
     cloudflare:
-      secretName: cloudflared-token-secret
-      tunnelName: k8s-homelab
       ingress:
         - hostname: "*.dariomazza.net"
           service: http://ingress-nginx-controller.ingress-nginx.svc.cluster.local:80

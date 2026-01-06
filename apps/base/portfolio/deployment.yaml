@@ -16,7 +16,7 @@ spec:
         app: portfolio
     spec:
       containers:
-      - image: ghcr.io/xdaryamo/portfolio:1.0.4
+      - image: ghcr.io/xdaryamo/portfolio:1.0.12
         name: portfolio
         ports:
             - containerPort: 4321

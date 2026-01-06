@@ -9,6 +9,7 @@ namePrefix: staging-
 
 patches:
   - path: ingress.yaml
+  - path: scaling.yaml
 
 images:
   - name: ghcr.io/xdaryamo/portfolio

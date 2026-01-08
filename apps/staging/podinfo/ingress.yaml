@@ -4,6 +4,7 @@ metadata:
   name: podinfo
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt-staging
+    external-dns.alpha.kubernetes.io/cloudflare-proxied: "false"
 spec:
   ingressClassName: nginx
   

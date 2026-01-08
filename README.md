@@ -41,9 +41,9 @@ This project leverages a modern Cloud Native stack to ensure performance, securi
 | <img src="https://cdn.simpleicons.org/cilium" width="40"> | [**Cilium**](https://cilium.io/) | **CNI & Security.** Uses eBPF for high-performance networking and L2 announcements. |
 | <img src="https://cdn.simpleicons.org/flux" width="40"> | [**Flux**](https://fluxcd.io/) | **GitOps.** Automates deployment and lifecycle management. |
 | <img src="https://cdn.simpleicons.org/nginx" width="40"> | [**Ingress NGINX**](https://kubernetes.github.io/ingress-nginx/) | **Ingress Controller.** Handles internal HTTP/HTTPS routing. |
-| <img src="https://cdn.simpleicons.org/cloudflare" width="40"> | [**Cloudflare Tunnel**](https://www.cloudflare.com/products/tunnel/) | **Edge Networking.** Exposes specific services to the internet securely without opening firewall ports. |
 | <img src="https://cdn.simpleicons.org/cloudflare" width="40"> | [**Cloudflare Zero Trust**](https://www.cloudflare.com/products/zero-trust/) | **Security & Access.** Provides secure access to internal applications and the cluster without a VPN. |
 | <img src="https://raw.githubusercontent.com/cert-manager/cert-manager/master/logo/logo-small.png" width="40"> | [**Cert-Manager**](https://cert-manager.io/) | **Security.** Automates issuance and renewal of Let's Encrypt SSL certificates. |
+| <img src="https://cdn.simpleicons.org/kubernetes" width="40"> | [**ExternalDNS**](https://github.com/kubernetes-sigs/external-dns) | **DNS Automation.** Synchronizes exposed Kubernetes services and ingresses with DNS providers. |
 | <img src="https://cdn.simpleicons.org/pihole" width="40"> | [**Pi-hole**](https://pi-hole.net/) | **Network DNS.** Runs in a Docker container outside K3s to ensure home internet stability during cluster maintenance. |
 
 ### Storage & Observability

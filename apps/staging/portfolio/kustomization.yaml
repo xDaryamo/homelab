@@ -13,4 +13,4 @@ patches:
 
 images:
   - name: ghcr.io/xdaryamo/portfolio
-    newTag: 1.0.12
+    newTag: 2.0.0

@@ -4,13 +4,21 @@
     "config:recommended"
   ],
   "flux": {
-    "managerFilePatterns": [
-      "/\\.yaml$/"
-    ]
+    "fileMatch": ["\\.yaml$"]
   },
   "kubernetes": {
-    "managerFilePatterns": [
-      "/\\.yaml$/"
-    ]
-  }
+    "fileMatch": ["\\.yaml$"]
+  },
+  "packageRules": [
+    {
+      "matchPaths": ["**/staging/**"],
+      "additionalBranchPrefix": "staging-",
+      "labels": ["staging"]
+    },
+    {
+      "matchPaths": ["**/production/**", "**/prod/**"],
+      "additionalBranchPrefix": "prod-",
+      "labels": ["production"]
+    }
+  ]
 }

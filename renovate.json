@@ -16,7 +16,7 @@
       "labels": ["staging"]
     },
     {
-      "matchPaths": ["**/production/**", "**/prod/**"],
+      "matchPaths": ["**/production/**", "**/base/**"],
       "additionalBranchPrefix": "prod-",
       "labels": ["production"]
     }

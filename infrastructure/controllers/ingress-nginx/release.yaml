@@ -38,3 +38,15 @@ spec:
       
       admissionWebhooks:
         enabled: false
+
+      config:
+        proxy-buffer-size: "16k"
+        proxy-buffers-number: "4" 
+        client-header-buffer-size: "16k"
+        large-client-header-buffers: "4 16k"
+        
+        keep-alive: "120"
+        client-body-timeout: "120"
+        
+        enable-real-ip: "true"
+        use-forwarded-headers: "true"

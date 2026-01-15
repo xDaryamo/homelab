@@ -5,13 +5,8 @@ metadata:
   namespace: longhorn
   annotations:
     tailscale.com/tags: "tag:k8s-operator"
-    tailscale.com/mtu: "1280"
 spec:
-  
   ingressClassName: tailscale
-  tls:
-  - hosts:
-    - longhorn
   rules:
   - host: longhorn
     http:

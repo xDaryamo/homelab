@@ -17,6 +17,7 @@ spec:
     targetPort: 8000
   selector:
     app: longhorn-ui
+    app.kubernetes.io/name: longhorn
   type: ClusterIP
 status:
   loadBalancer: {}

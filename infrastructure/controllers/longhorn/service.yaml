@@ -8,6 +8,7 @@ metadata:
   annotations:                
     tailscale.com/expose: "true"
     tailscale.com/hostname: "longhorn"
+    tailscale.com/tags: "tag:k8s-operator"
 spec:
   ports:
   - name: http

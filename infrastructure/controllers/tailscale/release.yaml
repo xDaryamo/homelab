@@ -39,3 +39,6 @@ spec:
                 path: client_id
               - key: client-secret
                 path: client_secret
+    operatorConfig:
+      defaultTags:
+        - tag:k8s-operator

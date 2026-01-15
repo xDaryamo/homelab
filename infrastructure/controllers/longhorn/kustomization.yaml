@@ -4,5 +4,5 @@ resources:
   - namespace.yaml
   - repository.yaml
   - release.yaml
-  - ingress.yaml
+  - service.yaml
   - storage-classes.yaml

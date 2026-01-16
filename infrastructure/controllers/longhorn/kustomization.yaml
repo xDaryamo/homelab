@@ -4,5 +4,5 @@ resources:
   - namespace.yaml
   - repository.yaml
   - release.yaml
-  - tailscale-expose.yaml
+  - ingress.yaml
   - storage-classes.yaml

@@ -8,4 +8,3 @@ resources:
   - renovate
   - cloudflared
   - external-dns
-  - tailscale

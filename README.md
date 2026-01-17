@@ -70,7 +70,7 @@ This project leverages a modern Cloud Native stack to ensure performance, securi
 
 | Logo | Application | Description |
 | :---: | :--- | :--- |
-| <img src="https://cdn.simpleicons.org/html5" width="40"> | [**Portfolio**](https://dariomazza.net) | My personal developer portfolio and resume site. |
+| <img src="https://dariomazza.net/favicon.ico" width="40"> | [**Portfolio**](https://dariomazza.net) | My personal developer portfolio and resume site. |
 
 ## 🛠️ How it Works
 

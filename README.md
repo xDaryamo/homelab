@@ -20,6 +20,13 @@ I follow a strictly **Declarative** approach. If it's not in Git, it doesn't exi
 *   **Orchestration:** **K3s** is my distribution of choice for its lightweight footprint without compromising on standard Kubernetes features.
 *   **GitOps:** **Flux** monitors this repository and automatically reconciles the cluster state. This ensures that the live cluster always matches the configuration committed to code, preventing configuration drift.
 
+### ⚖️ Design Decisions
+
+*   **Access Strategy:** I prioritize security and simplicity for service access:
+    *   **Internal Access:** Services are accessible directly within the local network or remotely via **Tailscale**, which provides a secure Mesh VPN layer.
+    *   **Public Access:** Specific services are exposed via **Cloudflare Zero Trust**, leveraging Cloudflare Authentication to ensure only authorized users can reach them without needing a traditional VPN.
+*   **Bare Metal vs. Virtualization:** To maximize the performance of my hardware, I opted for a **Bare Metal** installation instead of using a virtualization layer like Proxmox. This avoids the overhead of an hypervisor, which is critical given the resources of my mini PCs, and ensures that the cluster remains performant for both experimentation and private services.
+
 ## 💻 Hardware
 
 The cluster is composed of 3 **Dell Optiplex 7040 Micro** mini PCs. These units offer a perfect balance of performance and power efficiency for a 24/7 homelab environment.

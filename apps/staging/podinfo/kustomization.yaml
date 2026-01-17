@@ -3,6 +3,7 @@ kind: Kustomization
 resources:
   - ../../base/podinfo
   - ingress.yaml
+  - namespace.yaml
 
 namespace: podinfo-staging
 

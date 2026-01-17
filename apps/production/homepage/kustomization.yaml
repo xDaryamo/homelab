@@ -3,6 +3,7 @@ kind: Kustomization
 namespace: homepage
 resources:
   - ../../base/homepage
+  - namespace.yaml
 
 patches:
   - path: config-map-patch.yaml

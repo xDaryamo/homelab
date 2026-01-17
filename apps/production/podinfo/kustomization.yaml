@@ -4,6 +4,7 @@ namespace: podinfo
 resources:
   - ../../base/podinfo
   - ingress.yaml
+  - namespace.yaml
 
 patches:
   - path: scaling.yaml

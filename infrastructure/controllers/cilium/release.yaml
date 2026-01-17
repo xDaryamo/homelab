@@ -23,7 +23,7 @@ spec:
     remediation:
       retries: 3
   values:
-    mtu: 1280
+    mtu: 1450
     kubeProxyReplacement: true
 
     l2announcements:

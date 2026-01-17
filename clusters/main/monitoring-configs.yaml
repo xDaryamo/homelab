@@ -13,4 +13,6 @@ spec:
   decryption:
     provider: sops
     secretRef:
-      name: sops-age 
+      name: sops-age
+  dependsOn:
+    - name: monitoring-controllers 

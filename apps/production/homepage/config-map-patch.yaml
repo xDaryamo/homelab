@@ -26,13 +26,13 @@ data:
             href: https://dariomazza.net
             description: My Personal Website
         - Podinfo:
-            icon: https://raw.githubusercontent.com/stefanprodan/podinfo/master/logo.png
+            icon: https://raw.githubusercontent.com/stefanprodan/podinfo/gh-pages/cuddle_clap.gif
             href: https://podinfo.dariomazza.net
             description: Go Microservice Demo
 
     - Infrastructure:
         - FritzBox:
-            icon: https://upload.wikimedia.org/wikipedia/commons/f/f6/Fritz%21Box-Logo.svg
+            icon: https://fritz.com/cdn/shop/files/favicon_1_7cec16c7-3e78-4ee4-a825-55a17af30f8c.svg?crop=center&height=32&v=1766083933&width=32
             href: http://192.168.1.1
             description: Router Gateway
         - Grafana:
@@ -49,32 +49,49 @@ data:
     - Developer:
         - Github:
             - abbr: GH
+              icon: github.png
               href: https://github.com/xDaryamo
         - Cloudflare:
             - abbr: CF
+              icon: cloudflare.png
               href: https://dash.cloudflare.com/
     - Social & Personal:
+
         - Google:
             - abbr: GO
+              icon: google.png
               href: https://google.com
         - Gmail:
             - abbr: GM
+              icon: gmail.png
               href: https://mail.google.com
-        - LinkedIn:
-            - abbr: LI
-              href: https://www.linkedin.com
         - YouTube:
             - abbr: YT
+              icon: youtube.png
               href: https://www.youtube.com
+        - Gemini:
+            - abbr: GE
+              icon: google-gemini.png
+              href: https://gemini.google.com
+        - LinkedIn:
+            - abbr: LI
+              icon: linkedin.png
+              href: https://www.linkedin.com
 
   # --- Widgets ---
   widgets.yaml: |
-    - resources:
-        backend: resources
-        cpu: true
-        memory: true
-        disk: /
-        expanded: true
+    - kubernetes:
+        cluster:
+          show: true
+          cpu: true
+          memory: true
+          showLabel: true
+          label: "Cluster Total"
+        nodes:
+          show: true
+          cpu: true
+          memory: true
+          showLabel: true
     - search:
         provider: google
         target: _blank

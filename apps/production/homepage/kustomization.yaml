@@ -4,3 +4,6 @@ namespace: homepage
 resources:
   - ../../base/homepage
 
+patches:
+  - path: config-map-patch.yaml
+

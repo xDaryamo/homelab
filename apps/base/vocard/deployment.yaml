@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
         - name: vocard
-          image: chocomeow/vocard:latest
+          image: ghcr.io/chocomeow/vocard:v2.7.2
           ports:
             - containerPort: 8000
               name: http

@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: lavalink
+  labels:
+    app: lavalink
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: lavalink
+  template:
+    metadata:
+      labels:
+        app: lavalink
+    spec:
+      containers:
+        - name: lavalink
+          image: ghcr.io/lavalink-devs/lavalink:4.1.2
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: _JAVA_OPTIONS
+              value: "-Xmx1G"
+          ports:
+            - containerPort: 2333
+              name: http
+          volumeMounts:
+            - name: config
+              mountPath: /opt/Lavalink/application.yml
+              subPath: application.yml
+          resources:
+            requests:
+              cpu: 100m
+              memory: 512Mi
+            limits:
+              memory: 1Gi
+      volumes:
+        - name: config
+          secret:
+            secretName: lavalink-config

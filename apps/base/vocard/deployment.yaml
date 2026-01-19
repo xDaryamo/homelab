@@ -16,6 +16,15 @@ spec:
       labels:
         app: vocard
     spec:
+      initContainers:
+        - name: init-config
+          image: busybox:latest
+          command: ['sh', '-c', 'cp /config/settings.json /app/settings.json']
+          volumeMounts:
+            - name: settings-secret
+              mountPath: /config
+            - name: settings-volume
+              mountPath: /app
       containers:
         - name: vocard
           image: ghcr.io/chocomeow/vocard:v2.7.2
@@ -23,10 +32,9 @@ spec:
             - containerPort: 8000
               name: http
           volumeMounts:
-            - name: settings
+            - name: settings-volume
               mountPath: /app/settings.json
               subPath: settings.json
-              readOnly: true
           resources:
             requests:
               memory: "256Mi"
@@ -34,6 +42,8 @@ spec:
             limits:
               memory: "512Mi"
       volumes:
-        - name: settings
+        - name: settings-secret
           secret:
             secretName: vocard-settings
+        - name: settings-volume
+          emptyDir: {}

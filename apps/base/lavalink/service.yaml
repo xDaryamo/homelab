@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: lavalink
+  labels:
+    app: lavalink
+spec:
+  ports:
+    - port: 2333
+      targetPort: 2333
+      name: http
+  selector:
+    app: lavalink
+  type: ClusterIP

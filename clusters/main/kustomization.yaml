@@ -8,3 +8,4 @@ resources:
   - monitoring-configs.yaml
   - apps-production.yaml
   - apps-staging.yaml
+  - private-source.yaml

@@ -20,7 +20,8 @@ metadata:
   namespace: flux-system
 spec:
   interval: 10m
-  path: "./production"     
+  path: "./production"
+  prune: true     
   wait: true
   sourceRef:
     kind: GitRepository

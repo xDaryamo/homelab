@@ -6,7 +6,7 @@ metadata:
   namespace: flux-system
 spec:
   interval: 1m
-  url: ssh://git@github.com:xDaryamo/private-homelab.git
+  url: ssh://git@github.com/xDaryamo/private-homelab.git
   ref:
     branch: master
   secretRef:

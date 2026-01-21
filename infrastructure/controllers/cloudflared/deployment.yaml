@@ -32,13 +32,15 @@ spec:
               name: cloudflared-token-secret
               key: TUNNEL_TOKEN
         
-        command: ["cloudflared", "tunnel", "run"]
+        command: ["cloudflared", "tunnel"]
         args:
-        - "--token"
+        - "--metrics"        
+        - "0.0.0.0:2000"
+        - "run"              
+        - "--token"          
         - "$(TUNNEL_TOKEN)"
         - "--protocol"
         - "http2"
-        - "--metrics=0.0.0.0:2000"   
 
         livenessProbe:     
           httpGet:

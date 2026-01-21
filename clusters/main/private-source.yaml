@@ -27,3 +27,7 @@ spec:
     kind: GitRepository
     name: private-homelab  
   targetNamespace: default 
+  decryption:
+    provider: sops
+    secretRef:
+      name: sops-age 

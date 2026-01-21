@@ -7,6 +7,11 @@ metadata:
     app: cloudflared
 spec:
   replicas: 2
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1  
+      maxSurge: 1        
   selector:
     matchLabels:
       app: cloudflared
@@ -17,7 +22,7 @@ spec:
     spec:
       containers:
       - name: cloudflared
-        image: cloudflare/cloudflared:2025.11.1
+        image: cloudflare/cloudflared:2025.11.1 
         imagePullPolicy: IfNotPresent
         
         env:
@@ -33,3 +38,19 @@ spec:
         - "$(TUNNEL_TOKEN)"
         - "--protocol"
         - "http2"
+        - "--metrics"      
+        - "0.0.0.0:2000"    
+
+        livenessProbe:     
+          httpGet:
+            path: /ready
+            port: 2000
+          initialDelaySeconds: 10
+          periodSeconds: 10
+          
+        readinessProbe:  
+          httpGet:
+            path: /ready
+            port: 2000
+          initialDelaySeconds: 10
+          periodSeconds: 10

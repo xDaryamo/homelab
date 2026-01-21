@@ -47,7 +47,6 @@ spec:
             port: 2000
           initialDelaySeconds: 10
           periodSeconds: 10
-          
         readinessProbe:  
           httpGet:
             path: /ready

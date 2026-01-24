@@ -37,4 +37,4 @@ spec:
     operator:
       replicas: 1
 
-    devices: "enp0s31f6"
+    devices: "enp+,eth+,eno+"

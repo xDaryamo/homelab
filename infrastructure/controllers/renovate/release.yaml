@@ -35,7 +35,7 @@ spec:
       config: |
         {
           "platform": "github",
-          "repositories": ["xdaryamo/homelab"],
+          "repositories": ["xdaryamo/homelab", "xDaryamo/private-homelab"],
           "autodiscover": false
         }
     envFrom:

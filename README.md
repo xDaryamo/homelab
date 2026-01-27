@@ -12,9 +12,23 @@ As a recent Computer Science graduate passionate about Cloud Native technologies
 
 By self-hosting applications, I take ownership of the entire lifecycle—from hardware provisioning to application deployment, backup strategies, and observability.
 
-## 🏗️ Architecture & Provisioning
+## 🏗️ Architecture & GitOps Flow
 
 I follow a strictly **Declarative** approach. If it's not in Git, it doesn't exist.
+
+```mermaid
+graph TD
+    user[User/Developer] -->|Push Code| git[GitHub Repository]
+    subgraph "Bare Metal Cluster"
+        flux[Flux CD] -->|Watch & Pull| git
+        flux -->|Reconcile| k3s[K3s Cluster]
+        k3s -->|Deploy| app[Applications]
+        cilium[Cilium CNI] -.->|Pod Networking / eBPF| app
+    end
+    client[External Client] -->|HTTPS| cf[Cloudflare Zero Trust]
+    cf -->|Tunnel| ingress[Ingress NGINX]
+    ingress -->|Route| app
+```
 
 *   **Provisioning:** I use **Ansible** to bootstrap bare metal Debian nodes. This includes OS hardening, dependency installation, and spinning up the K3s cluster.
 *   **Orchestration:** **K3s** is my distribution of choice for its lightweight footprint without compromising on standard Kubernetes features.
@@ -22,10 +36,23 @@ I follow a strictly **Declarative** approach. If it's not in Git, it doesn't exi
 
 ### ⚖️ Design Decisions
 
+*   **Public vs. Private Architecture:** I utilize a multi-source GitOps strategy. This public repository manages the infrastructure and open-source stack, while a linked **Private Repository** handles sensitive workloads and personal data. Flux seamlessly reconciles both streams, allowing me to share my work publicly while keeping private data secure.
 *   **Access Strategy:** I prioritize security and simplicity for service access:
     *   **Internal Access:** Services are accessible directly within the local network or remotely via **Tailscale**, which provides a secure Mesh VPN layer.
     *   **Public Access:** Specific services are exposed via **Cloudflare Zero Trust**, leveraging Cloudflare Authentication to ensure only authorized users can reach them without needing a traditional VPN.
 *   **Bare Metal vs. Virtualization:** To maximize the performance of my hardware, I opted for a **Bare Metal** installation instead of using a virtualization layer like Proxmox. This avoids the overhead of an hypervisor, which is critical given the resources of my mini PCs, and ensures that the cluster remains performant for both experimentation and private services.
+
+## 📂 Repository Structure
+
+The repository mimics a standard enterprise monorepo structure, separating concerns between infrastructure, cluster definition, and applications.
+
+```text
+├── 📂 ansible/        # Ansible playbooks for OS provisioning and K3s installation
+├── 📂 apps/           # Application manifests (Base, Staging, Production overlays)
+├── 📂 clusters/       # Flux Cluster definitions (entry point for GitOps)
+├── 📂 infrastructure/ # Infrastructure components (Ingress, Cert-Manager, Cilium)
+└── 📂 monitoring/     # Observability stack (Prometheus, Grafana)
+```
 
 ## 💻 Hardware
 
@@ -74,12 +101,29 @@ This project leverages a modern Cloud Native stack to ensure performance, securi
 | <img src="https://avatars.githubusercontent.com/u/122929872" width="40"> | **Homepage** | A modern, highly customizable dashboard for my homelab. |
 | <img src="https://docs.vocard.xyz/2.7.2/assets/logo.png" width="40"> | [**Vocard**](https://github.com/ChocoMeow/Vocard-Dashboard) | A feature-rich Discord music bot. Its microservices stack includes **Lavalink** for audio processing and **MongoDB** for data persistence. |
 
-## 🛠️ How it Works
+## ⚡ Bootstrap & Disaster Recovery
 
-1.  **Code Change:** I commit a change to a manifest (e.g., upgrading an image version).
-2.  **Flux Reconcile:** Flux detects the commit and pulls the changes.
-3.  **Apply:** Flux applies the changes to the K3s cluster.
-4.  **Drift Detection:** If someone manually changes a resource on the cluster, Flux undoes it, restoring the state defined in Git.
+This cluster is designed to be fully reproducible. In case of a catastrophic failure, it can be rebuilt from scratch using the following steps.
+
+1.  **Provision Hardware & K3s:**
+    Using the Ansible playbooks located in `ansible/`, we install dependencies, harden the OS, and install K3s.
+    ```bash
+    ansible-galaxy install -r ansible/requirements.yml
+    ansible-playbook -i ansible/inventory.ini ansible/site.yml
+    ```
+
+2.  **Bootstrap Flux:**
+    Flux is installed on the cluster and pointed to this repository.
+    ```bash
+    flux bootstrap github \
+      --owner=$GITHUB_USER \
+      --repository=homelab \
+      --path=clusters/main \
+      --personal
+    ```
+
+3.  **Restore Secrets:**
+    The GPG/Age private keys are restored to the cluster so Flux can decrypt the SOPS secrets.
 
 ---
 

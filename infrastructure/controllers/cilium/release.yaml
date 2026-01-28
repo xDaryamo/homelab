@@ -37,6 +37,4 @@ spec:
     operator:
       replicas: 1
 
-    devices: "enp+,eth+,eno+"
-    extraConfig:
-      exclude-devices: "tailscale0"
+    devices: "enp+,eth+,eno+,tailscale+"

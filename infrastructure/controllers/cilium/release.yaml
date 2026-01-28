@@ -38,3 +38,5 @@ spec:
       replicas: 1
 
     devices: "enp+,eth+,eno+"
+    extraConfig:
+      exclude-devices: "tailscale0"

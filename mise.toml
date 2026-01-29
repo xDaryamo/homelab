@@ -15,6 +15,9 @@ node = "lts"
 neovim = "latest"
 python = "latest"
 cilium-cli="latest"
+azure="latest"
+terraform="latest"
+
 
 [settings] 
 python.uv_venv_auto = true

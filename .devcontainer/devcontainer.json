@@ -8,5 +8,6 @@
     "TERM": "xterm-256color"
   },
   "postCreateCommand": "bash .devcontainer/scripts/setup.sh",
-  "remoteUser": "vscode"
+  "remoteUser": "vscode",
+  "workspaceFolder": "/workspaces/homelab"
 }

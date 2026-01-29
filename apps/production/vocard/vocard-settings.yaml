@@ -1,0 +1,17 @@
+apiVersion: external-secrets.io/v1beta1
+kind: ExternalSecret
+metadata:
+  name: vocard-settings
+  namespace: vocard
+spec:
+  refreshInterval: "1h"
+  secretStoreRef:
+    name: azure-kv
+    kind: ClusterSecretStore
+  target:
+    name: vocard-settings
+    creationPolicy: Owner
+  data:
+  - secretKey: settings.json
+    remoteRef:
+      key: vocard-settings

@@ -5,4 +5,4 @@ resources:
   - ../../base/vocard
   - namespace.yaml
   - mongodb-secret.sops.yaml
-  - vocard-settings.sops.yaml
+  - vocard-settings.yaml

@@ -1,0 +1,17 @@
+apiVersion: external-secrets.io/v1beta1
+kind: ExternalSecret
+metadata:
+  name: lavalink-config
+  namespace: vocard
+spec:
+  refreshInterval: "1h"
+  secretStoreRef:
+    name: azure-kv
+    kind: ClusterSecretStore
+  target:
+    name: lavalink-config
+    creationPolicy: Owner
+  data:
+  - secretKey: application.yml
+    remoteRef:
+      key: lavalink-config

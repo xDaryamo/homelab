@@ -3,4 +3,4 @@ kind: Kustomization
 namespace: vocard
 resources:
   - ../../base/lavalink
-  - lavalink-config.sops.yaml
+  - lavalink-config.yaml

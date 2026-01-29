@@ -7,7 +7,7 @@ helm = "latest"
 k9s = "latest"
 kustomize = "latest"
 flux2 = "2.7.5"
-sops = "latest"
+
 age = "latest"
 yq = "latest"
 jq = "latest"

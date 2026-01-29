@@ -5,4 +5,4 @@ resources:
   - repository.yaml
   - release.yaml
   - issuers
-  - cloudflare-secret.sops.yaml
+  - cloudflare-secret.yaml

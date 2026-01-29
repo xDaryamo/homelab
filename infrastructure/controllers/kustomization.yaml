@@ -8,3 +8,4 @@ resources:
   - renovate
   - cloudflared
   - external-dns
+  - external-secrets

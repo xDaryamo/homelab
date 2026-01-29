@@ -25,8 +25,4 @@ spec:
   wait: true
   sourceRef:
     kind: GitRepository
-    name: private-homelab  
-  decryption:
-    provider: sops
-    secretRef:
-      name: sops-age 
+    name: private-homelab 

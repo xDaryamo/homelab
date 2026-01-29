@@ -4,4 +4,4 @@ resources:
   - namespace.yaml
   - repository.yaml
   - release.yaml
-  - grafana-secret.sops.yaml
+  - grafana-secret.yaml

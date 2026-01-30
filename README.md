@@ -19,20 +19,30 @@ I follow a strictly **Declarative** approach. If it's not in Git, it doesn't exi
 ```mermaid
 graph TD
     user[User/Developer] -->|Push Code| git[GitHub Repository]
+    user -->|Provision| tf[Terraform]
+
+    subgraph "Azure Cloud"
+        tf -->|Manage| kv[Azure Key Vault]
+    end
+
     subgraph "Bare Metal Cluster"
         flux[Flux CD] -->|Watch & Pull| git
         flux -->|Reconcile| k3s[K3s Cluster]
         k3s -->|Deploy| app[Applications]
+        eso[External Secrets] -.->|Fetch Secrets| kv
         cilium[Cilium CNI] -.->|Pod Networking / eBPF| app
     end
+    
     client[External Client] -->|HTTPS| cf[Cloudflare Zero Trust]
     cf -->|Tunnel| ingress[Ingress NGINX]
     ingress -->|Route| app
 ```
 
-*   **Provisioning:** I use **Ansible** to bootstrap bare metal Debian nodes. This includes OS hardening, dependency installation, and spinning up the K3s cluster.
-*   **Orchestration:** **K3s** is my distribution of choice for its lightweight footprint without compromising on standard Kubernetes features.
-*   **GitOps:** **Flux** monitors this repository and automatically reconciles the cluster state. This ensures that the live cluster always matches the configuration committed to code, preventing configuration drift.
+*   **Provisioning:**
+    *   **Bare Metal:** I use **Ansible** to bootstrap the physical Debian nodes.
+    *   **Cloud Infrastructure:** I use **Terraform** to manage Azure resources (Key Vault, Identities) as code, ensuring a reproducible hybrid environment.
+*   **Orchestration:** **K3s** is my distribution of choice for its lightweight footprint.
+*   **GitOps:** **Flux** monitors this repository and automatically reconciles the cluster state.
 
 ### ⚖️ Design Decisions
 
@@ -68,10 +78,19 @@ The cluster is composed of 3 **Dell Optiplex 7040 Micro** mini PCs. These units 
 
 This project leverages a modern Cloud Native stack to ensure performance, security, and observability.
 
+### Cloud & Infrastructure as Code
+
+| Logo | Technology | Purpose |
+| :---: | :--- | :--- |
+| <img src="https://cdn.simpleicons.org/terraform" width="40"> | [**Terraform**](https://www.terraform.io/) | **Infrastructure as Code.** Provisions and manages Azure resources (Key Vault, IAM) to ensure a reproducible cloud environment. |
+| <img src="https://avatars.githubusercontent.com/u/6844498?s=200&v=4" width="40"> | [**Microsoft Azure**](https://azure.microsoft.com/) | **Cloud Provider.** Hosts the Key Vault for secret management, integrating enterprise-grade security into the homelab. |
+| <img src="https://cdn.simpleicons.org/ansible" width="40"> | [**Ansible**](https://www.ansible.com/) | **Configuration Management.** Automates the provisioning and hardening of the bare metal Debian servers. |
+
 ### Infrastructure & Networking
 
 | Logo | Technology | Purpose |
 | :---: | :--- | :--- |
+| <img src="https://raw.githubusercontent.com/external-secrets/external-secrets/main/assets/eso-logo-large.png" width="40"> | [**External Secrets**](https://external-secrets.io/) | **Secret Management.** Bridges the gap between Azure Key Vault and Kubernetes, syncing cloud secrets into the cluster securely. |
 | <img src="https://cdn.simpleicons.org/cilium" width="40"> | [**Cilium**](https://cilium.io/) | **CNI & Security.** Uses eBPF for high-performance networking and L2 announcements. |
 | <img src="https://cdn.simpleicons.org/flux" width="40"> | [**Flux**](https://fluxcd.io/) | **GitOps.** Automates deployment and lifecycle management. |
 | <img src="https://cdn.simpleicons.org/nginx" width="40"> | [**Ingress NGINX**](https://kubernetes.github.io/ingress-nginx/) | **Ingress Controller.** Handles internal HTTP/HTTPS routing. |
@@ -88,10 +107,6 @@ This project leverages a modern Cloud Native stack to ensure performance, securi
 | <img src="https://cdn.simpleicons.org/prometheus" width="40"> | [**Prometheus**](https://prometheus.io/) | **Metrics.** Scrapes and stores metrics from all cluster components. |
 | <img src="https://cdn.simpleicons.org/grafana" width="40"> | [**Grafana**](https://grafana.com/) | **Visualization.** Dashboards for monitoring cluster health and performance. |
 | <img src="https://avatars.githubusercontent.com/u/38656520?s=200&v=4" width="40"> | [**Renovate**](https://renovatebot.com/) | **Automation.** Automatically creates Pull Requests to update dependencies. |
-
-### Secret Management
-
-*   **SOPS (Secrets OPerationS):** All secrets in this repo are encrypted using SOPS with Age keys. They are safe to commit to public repositories and are decrypted natively inside the cluster by Flux.
 
 ## 📱 Applications
 
@@ -122,8 +137,14 @@ This cluster is designed to be fully reproducible. In case of a catastrophic fai
       --personal
     ```
 
-3.  **Restore Secrets:**
-    The GPG/Age private keys are restored to the cluster so Flux can decrypt the SOPS secrets.
+3.  **Configure Secret Access:**
+    The Azure Service Principal credentials must be manually added to the cluster to allow the External Secrets Operator to authenticate with Azure Key Vault.
+    ```bash
+    kubectl create secret generic azure-secret-sp \
+      --namespace external-secrets \
+      --from-literal=client-id=$AZURE_CLIENT_ID \
+      --from-literal=client-secret=$AZURE_CLIENT_SECRET
+    ```
 
 ---
 

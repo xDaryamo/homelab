@@ -4,3 +4,5 @@ resources:
   - cilium
   - external-secrets
   - cert-manager
+  - cloudflared
+  - external-dns

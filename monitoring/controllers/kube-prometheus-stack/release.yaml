@@ -37,7 +37,7 @@ spec:
         annotations:
           cert-manager.io/cluster-issuer: letsencrypt-prod
           external-dns.alpha.kubernetes.io/cloudflare-proxied: "true"
-          external-dns.alpha.kubernetes.io/target: "11fa467d-a7ab-4d32-bcf0-f489efd8259f.cfargotunnel.com"
+                    external-dns.alpha.kubernetes.io/target: "e859d444-74bb-4e45-8426-1e6141995ed9.cfargotunnel.com"
         hosts:
           - grafana.dariomazza.net
         tls:

@@ -1,4 +1,16 @@
-# 🏠 Homelab
+![Kubernetes](https://img.shields.io/badge/Kubernetes-326CE5?style=flat&logo=kubernetes&logoColor=fff) 
+![Azure](https://custom-icon-badges.demolab.com/badge/Microsoft%20Azure-0089D6?style=flat&logo=msazure&logoColor=white) 
+![Terraform](https://img.shields.io/badge/Terraform-844FBA?style=flat&logo=terraform&logoColor=fff) 
+![Ansible](https://img.shields.io/badge/Ansible-EE0000?style=flat&logo=ansible&logoColor=white) 
+![Debian](https://img.shields.io/badge/Debian-A81D33?style=flat&logo=debian&logoColor=fff) 
+![Cilium](https://img.shields.io/badge/Cilium-F8C200?style=flat&logo=cilium&logoColor=black) 
+![Cloudflare](https://img.shields.io/badge/Cloudflare-F38020?style=flat&logo=Cloudflare&logoColor=white) 
+![nginx](https://img.shields.io/badge/nginx-009639?style=flat&logo=nginx&logoColor=fff) 
+![Flux](https://img.shields.io/badge/Flux_CD-336791?style=flat&logo=flux&logoColor=white) 
+![Renovate](https://img.shields.io/badge/RenovateBot-1A1F6C?style=flat&logo=renovate&logoColor=fff)
+# 🤖 Homelab - GitOps driven Bare Metal Kubernetes
+
+## Project Overview
 
 **A GitOps-driven, Bare Metal Kubernetes cluster.**
 

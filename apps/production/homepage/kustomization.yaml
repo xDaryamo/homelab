@@ -4,6 +4,7 @@ namespace: homepage
 resources:
   - ../../base/homepage
   - namespace.yaml
+  - ingress.yaml
 
 patches:
   - path: config-map-patch.yaml

@@ -3,18 +3,16 @@ kind: Ingress
 metadata:
   name: homepage
   namespace: homepage
-  labels:
-    app.kubernetes.io/name: homepage
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt-prod
     external-dns.alpha.kubernetes.io/cloudflare-proxied: "false"
 spec:
   tls:
     - hosts:
-        - homepage.dariomazza.net
-      secretName: homepage-tls
+        - dashboard-inner.dariomazza.net
+      secretName: homepage-inner-tls
   rules:
-    - host: "homepage.dariomazza.net"
+    - host: "dashboard-inner.dariomazza.net"
       http:
         paths:
           - path: "/"

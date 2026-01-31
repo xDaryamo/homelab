@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: glance-config
+  namespace: glance
+data:
+  glance.yml: |
+    theme:
+      background-color: 240 240 240
+      primary-color: 30 30 30
+      text-color: 30 30 30
+
+    pages:
+      - name: Home
+        columns:
+          - size: full
+            widgets:
+              - type: iframe
+                title: Dashboard
+                url: https://dashboard-inner.dariomazza.net
+                height: 1200

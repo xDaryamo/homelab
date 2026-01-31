@@ -6,7 +6,7 @@ metadata:
 data:
   glance.yml: |
     theme:
-      background-color: 240 240 240
+      background-color: 240, 0%, 94%
       primary-color: 30 30 30
       text-color: 30 30 30
 

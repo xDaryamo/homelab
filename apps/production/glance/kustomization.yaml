@@ -5,6 +5,8 @@ resources:
   - ../../base/glance
   - namespace.yaml
   - ingress.yaml
+  - google-secret.yaml
 
 patches:
   - path: config-map-patch.yaml
+  - path: deployment-patch.yaml

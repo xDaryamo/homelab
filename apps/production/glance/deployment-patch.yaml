@@ -1,0 +1,13 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: glance
+  namespace: glance
+spec:
+  template:
+    spec:
+      containers:
+        - name: glance
+          envFrom:
+            - secretRef:
+                name: glance-google-secret

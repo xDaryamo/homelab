@@ -35,7 +35,7 @@ data:
                 first-day-of-week: monday
 
               - type: custom-api
-                title: Upcoming Google Calendar Events
+                title: Events
                 cache: 15m
                 template: |
                   {{
@@ -80,19 +80,18 @@ data:
                         {{ $endDateOnly := $end | formatTime "DateOnly" }}
                         {{ $isStartAndEndDateSame := eq $startDateOnly $endDateOnly }}
 
-                        <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-start;">
-                          <a href="https://calendar.google.com/calendar/u/0" target="_blank" class="size-h1" style="text-align: left; width: 215px;">
+                        <div style="margin-bottom: 0.75rem;">
+                          <a href="https://calendar.google.com/calendar/u/0" target="_blank" class="size-h1" style="display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 100%;">
                             {{ .String "summary" }}
                           </a>
-                          <a href="https://calendar.google.com/calendar/u/0" target="_blank" class="size-h3" style="text-align: left;">
-                            {{ $start | formatTime "Mon, Jan 2 · 3:04 PM" }} 
-                            {{ if $isStartAndEndDateSame }}
-                                - {{ $end | formatTime "3:04 PM" }}
-                              {{ else }}
-                                - {{ $end | formatTime "Mon, Jan 2 · 3:04 PM" }}
-                            {{ end }}
-                          </a>
-                          <div class="color-primary size-h3" style="text-align: right; width: 75px;" {{ $start | toRelativeTime }}>
+                          <div style="display: flex; justify-content: space-between; align-items: baseline;" class="size-h3">
+                            <span style="opacity: 0.8;">
+                              {{ $start | formatTime "Mon, Jan 2 · 3:04 PM" }}
+                              {{ if not $isStartAndEndDateSame }}
+                                - ...
+                              {{ end }}
+                            </span>
+                            <span class="color-primary" {{ $start | toRelativeTime }}></span>
                           </div>
                         </div>
                       {{ end }}

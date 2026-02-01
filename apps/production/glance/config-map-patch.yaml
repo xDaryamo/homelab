@@ -81,18 +81,13 @@ data:
                         {{ $isStartAndEndDateSame := eq $startDateOnly $endDateOnly }}
 
                         <div style="margin-bottom: 0.75rem;">
-                          <a href="https://calendar.google.com/calendar/u/0" target="_blank" class="size-h1" style="display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 100%;">
+                          <a href="https://calendar.google.com/calendar/u/0" target="_blank" class="size-h1" style="display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 100%; margin-bottom: 0.2rem;">
                             {{ .String "summary" }}
                           </a>
-                          <div style="display: flex; justify-content: space-between; align-items: baseline;" class="size-h3">
-                            <span style="opacity: 0.8;">
-                              {{ $start | formatTime "Mon, Jan 2 · 3:04 PM" }}
-                              {{ if not $isStartAndEndDateSame }}
-                                - ...
-                              {{ end }}
-                            </span>
-                            <span class="color-primary" {{ $start | toRelativeTime }}></span>
+                          <div style="opacity: 0.8; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" class="size-h3">
+                            {{ $start | formatTime "Mon, Jan 2 · 3:04 PM" }}
                           </div>
+                          <div class="color-primary size-h3" {{ $start | toRelativeTime }}></div>
                         </div>
                       {{ end }}
                       </div>

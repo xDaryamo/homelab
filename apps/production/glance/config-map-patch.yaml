@@ -93,3 +93,11 @@ data:
                   - go-gitea/gitea
                   - immich-app/immich
                   - syncthing/syncthing
+
+      - name: Homelab
+        columns:
+          - size: full
+            widgets:
+              - type: iframe
+                source: https://dashboard-inner.dariomazza.net
+                height: 800

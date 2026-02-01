@@ -20,8 +20,7 @@ spec:
             - containerPort: 8080
           volumeMounts:
             - name: config
-              mountPath: /app/config/glance.yml
-              subPath: glance.yml
+              mountPath: /app/config
           resources:
             requests:
               cpu: 10m

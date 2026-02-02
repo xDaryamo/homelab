@@ -8,8 +8,13 @@ spec:
     spec:
       containers:
         - name: glance
+          env:
+            - name: STEAM_USER
+              value: "76561198100174105"
           envFrom:
             - secretRef:
                 name: glance-google-secret
             - secretRef:
                 name: glance-github-secret
+            - secretRef:
+                name: glance-steam-secret

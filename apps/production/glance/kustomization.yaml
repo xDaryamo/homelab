@@ -6,6 +6,7 @@ resources:
   - namespace.yaml
   - google-secret.yaml
   - github-secret.yaml
+  - steam-secret.yaml
   - ingress.yaml
 
 patches:

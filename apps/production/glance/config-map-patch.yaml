@@ -116,12 +116,46 @@ data:
                         <p style="color: #d1d1d1;" class="size-h3">No tasks found</p>
                       {{ else }}
                         <div>
+                          {{ $lastDate := "" }}
+                          {{ $now := now }}
+                          {{ $today := $now | formatTime "2006-01-02" }}
+                          {{ $yesterday := offsetNow "-24h" | formatTime "2006-01-02" }}
+                          {{ $tomorrow := offsetNow "24h" | formatTime "2006-01-02" }}
+
                           {{ range $items }}
-                          <div style="display: flex; align-items: center; margin-bottom: 4px;">
-                             <a href="https://tasks.google.com/embed/?origin=https://calendar.google.com" target="_blank" class="size-h3" style="text-align: left; width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block;">
-                              - {{ .String "title" }}
-                            </a>
-                          </div>
+                            {{ $due := .String "due" }}
+                            {{ $currentDisplayGroup := "" }}
+
+                            {{ if ne $due "" }}
+                              {{ $dueTime := $due | parseTime "rfc3339" }}
+                              {{ $dueDateStr := $dueTime | formatTime "2006-01-02" }}
+                              {{ $currentDisplayGroup = $dueTime | formatTime "02/01" }}
+
+                              {{ if eq $dueDateStr $today }}
+                                {{ $currentDisplayGroup = "Today" }}
+                              {{ else if eq $dueDateStr $yesterday }}
+                                {{ $currentDisplayGroup = "Yesterday" }}
+                              {{ else if eq $dueDateStr $tomorrow }}
+                                {{ $currentDisplayGroup = "Tomorrow" }}
+                              {{ end }}
+                            {{ else }}
+                              {{ $currentDisplayGroup = "No Date" }}
+                            {{ end }}
+
+                            {{ if ne $currentDisplayGroup $lastDate }}
+                              {{ if ne $currentDisplayGroup "No Date" }}
+                                <div class="color-primary size-h3" style="margin-top: 8px; margin-bottom: 4px;">
+                                  {{ $currentDisplayGroup }}
+                                </div>
+                              {{ end }}
+                              {{ $lastDate = $currentDisplayGroup }}
+                            {{ end }}
+
+                            <div style="display: flex; align-items: center; margin-bottom: 4px;">
+                               <a href="https://tasks.google.com/embed/?origin=https://calendar.google.com" target="_blank" class="size-h3" style="text-align: left; width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block;">
+                                - {{ .String "title" }}
+                              </a>
+                            </div>
                           {{ end }}
                         </div>
                       {{ end }}
@@ -135,6 +169,28 @@ data:
             widgets:
               - type: search
                 autofocus: true
+
+              - type: split-column
+                max-columns: 3
+                widgets:
+                  - type: bookmarks
+                    hide-header: true
+                    groups:
+                      - title: Google
+                        icon: si:google
+                        links:
+                          - title: Gmail
+                            url: https://mail.google.com
+                            icon: si:gmail
+                          - title: YouTube
+                            url: https://youtube.com
+                            icon: si:youtube
+                          - title: Gemini
+                            url: https://gemini.google.com
+                            icon: si:googlegemini
+                          - title: Keep
+                            url: https://keep.google.com
+                            icon: si:googlekeep
 
               - type: group
                 widgets:

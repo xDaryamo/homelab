@@ -261,49 +261,68 @@ data:
                     name: Worker Secondary
                     url: http://192.168.1.26:27973
                     hide-swap: true
-              - type: repository
-                repository: xDaryamo/homelab
+              
+
           - size: full
             widgets:
-              - type: custom-api
-                title: Cluster Overview
-                cache: 1m
-                url: http://kube-prometheus-stack-prometheus.monitoring.svc.cluster.local:9090/api/v1/query?query=1%20-%20sum(node_memory_MemAvailable_bytes)%20/%20sum(node_memory_MemTotal_bytes)
-                subrequests:
-                  cpu:
-                    url: http://kube-prometheus-stack-prometheus.monitoring.svc.cluster.local:9090/api/v1/query?query=avg(1%20-%20rate(node_cpu_seconds_total%7Bmode=%22idle%22%7D%5B5m%5D))
-                template: |
-                  <div class="flex justify-between text-center">
-                    <div>
-                        <div class="color-highlight size-h3">{{ mul (.JSON.String "data.result.0.value.1" | toFloat) 100 | printf "%.1f" }}%</div>
-                        <div class="size-h6">RAM USAGE</div>
-                    </div>
-                    <div>
-                        <div class="color-highlight size-h3">{{ mul ((.Subrequest "cpu").JSON.String "data.result.0.value.1" | toFloat) 100 | printf "%.1f" }}%</div>
-                        <div class="size-h6">CPU USAGE</div>
-                    </div>
-                  </div>
-              - type: releases
-                repositories:
-                  - xDaryamo/homelab
-                  - kubernetes/kubernetes
-                  - fluxcd/flux2
-                  - renovatebot/renovate
-                  - cilium/cilium
-                  - cert-manager/cert-manager
-                  - longhorn/longhorn
-          - size: small
-            widgets:
               - type: monitor
-                title: Active Services
+                cache: 1m
+                title: Services
                 sites:
+                  - title: Cloudflared
+                    url: http://cloudflared.cloudflared.svc.cluster.local:2000/ready
+                    icon: sh:cloudflare
                   - title: Portfolio
-                    url: https://dariomazza.net
-                  - title: Podinfo
-                    url: https://podinfo.dariomazza.net
-                  - title: Homepage
-                    url: https://dashboard-inner.dariomazza.net
+                    url: https://dariomazza.net/
+                    icon: si:astro
                   - title: Longhorn
                     url: https://longhorn.dariomazza.net
+                    icon: di:longhorn
+                  - title: Grafana
+                    url: https://grafana.dariomazza.net
+                    icon: sh:grafana
                   - title: Glance
                     url: https://home.dariomazza.net
+                    icon: sh:glance
+                  - title: Jellyfin
+                    url: https://jellyfin.dariomazza.net/
+                    icon: sh:jellyfin
+                
+              - type: bookmarks
+                groups:
+                  - links:
+                      - title: Cloudflare Dashboard
+                        url: https://dash.cloudflare.com/
+                        icon: sh:cloudflare
+                  - links:
+                      - title: Fritz!Box
+                        url: http://192.168.1.1
+                        icon: si:fritz
+        
+              - type: group
+                widgets:
+                  - type: reddit
+                    subreddit: selfhosted
+                    show-thumbnails: true
+                  - type: reddit
+                    subreddit: homelab
+                    show-thumbnails: true
+                  - type: reddit
+                    subreddit: kubernetes
+                    show-thumbnails: true
+
+              - type: videos
+                title: Homelab Media
+                channels:
+                  - UCgdTVe88YVSrOZ9qKumhULQ # Hardware Haven
+                  - UCDAck-gFPTrgTx_qp59-bQA # Mischa van den Burg
+                  - UCjSEJkpGbcZhvo0lr-44X_w # TechHut
+            
+          - size: small
+            widgets:
+              - type: repository
+                repository: xDaryamo/homelab
+                token: ${GITHUB_TOKEN}
+              - type: repository
+                repository: xDaryamo/private-homelab
+                token: ${GITHUB_TOKEN}

@@ -242,3 +242,68 @@ data:
                     name: Apple
                   - symbol: MSFT
                     name: Microsoft
+
+      - name: Homelab
+        columns:
+          - size: small
+            widgets:
+              - type: server-stats
+                servers:
+                  - type: remote
+                    name: Control Plane
+                    url: http://192.168.1.24:27973
+                    hide-swap: true
+                  - type: remote
+                    name: Worker Primary
+                    url: http://192.168.1.25:27973
+                    hide-swap: true
+                  - type: remote
+                    name: Worker Secondary
+                    url: http://192.168.1.26:27973
+                    hide-swap: true
+              - type: repository
+                repository: xDaryamo/homelab
+          - size: full
+            widgets:
+              - type: custom-api
+                title: Cluster Overview
+                cache: 1m
+                url: http://kube-prometheus-stack-prometheus.monitoring.svc.cluster.local:9090/api/v1/query?query=1%20-%20sum(node_memory_MemAvailable_bytes)%20/%20sum(node_memory_MemTotal_bytes)
+                subrequests:
+                  cpu:
+                    url: http://kube-prometheus-stack-prometheus.monitoring.svc.cluster.local:9090/api/v1/query?query=avg(1%20-%20rate(node_cpu_seconds_total%7Bmode=%22idle%22%7D%5B5m%5D))
+                template: |
+                  <div class="flex justify-between text-center">
+                    <div>
+                        <div class="color-highlight size-h3">{{ mul (.JSON.String "data.result.0.value.1" | toFloat) 100 | printf "%.1f" }}%</div>
+                        <div class="size-h6">RAM USAGE</div>
+                    </div>
+                    <div>
+                        <div class="color-highlight size-h3">{{ mul ((.Subrequest "cpu").JSON.String "data.result.0.value.1" | toFloat) 100 | printf "%.1f" }}%</div>
+                        <div class="size-h6">CPU USAGE</div>
+                    </div>
+                  </div>
+              - type: releases
+                repositories:
+                  - xDaryamo/homelab
+                  - kubernetes/kubernetes
+                  - fluxcd/flux2
+                  - renovatebot/renovate
+                  - cilium/cilium
+                  - cert-manager/cert-manager
+                  - longhorn/longhorn
+          - size: small
+            widgets:
+              - type: monitor
+                title: Active Services
+                sites:
+                  - title: Portfolio
+                    url: https://dariomazza.net
+                  - title: Podinfo
+                    url: https://podinfo.dariomazza.net
+                  - title: Homepage
+                    url: https://dashboard-inner.dariomazza.net
+                  - title: Longhorn
+                    url: https://longhorn.dariomazza.net
+                  - title: Glance
+                    url: https://home.dariomazza.net

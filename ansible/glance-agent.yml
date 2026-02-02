@@ -56,7 +56,7 @@
             token: 
 
           system:
-            hide-mountpoints-by-default: false
+            hide-mountpoints-by-default: true
             mountpoints:
               "/":
                 hide: false

@@ -82,6 +82,9 @@ data:
         columns:
           - size: small
             widgets:
+              - type: clock
+                hour-format: 24h
+
               - type: calendar
                 first-day-of-week: monday
 
@@ -223,7 +226,7 @@ data:
           - size: small
             widgets:
               - type: weather
-                location: London, United Kingdom
+                location: Torre del Greco, Italy
                 units: metric
                 hour-format: 24h
 
@@ -239,11 +242,3 @@ data:
                     name: Apple
                   - symbol: MSFT
                     name: Microsoft
-
-              - type: releases
-                cache: 1d
-                repositories:
-                  - glanceapp/glance
-                  - go-gitea/gitea
-                  - immich-app/immich
-                  - syncthing/syncthing

@@ -175,25 +175,28 @@ data:
                 max-columns: 3
                 widgets:
                   - type: bookmarks
-                    hide-header: true
                     groups:
-                      - title: Apps
-                        links:
+                      - links:
                           - title: Gmail
                             url: https://mail.google.com
-                            icon: si:gmail
+                            icon: sh:gmail
                           - title: YouTube
                             url: https://youtube.com
-                            icon: si:youtube
+                            icon: sh:youtube
+                      - links:
                           - title: WhatsApp
                             url: https://web.whatsapp.com
-                            icon: si:whatsapp
+                            icon: sh:whatsapp
                           - title: Gemini
                             url: https://gemini.google.com
-                            icon: si:googlegemini
+                            icon: sh:google-gemini
+                      - links:
                           - title: Keep
                             url: https://keep.google.com
-                            icon: si:googlekeep
+                            icon: sh:google-keep
+                          - title: Linkedin
+                            url: https://linkedin.com
+                            icon: sh:linkedin
 
               - type: rss
                 title: NEWS

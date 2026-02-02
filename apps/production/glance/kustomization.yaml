@@ -7,8 +7,6 @@ resources:
   - google-secret.yaml
   - github-secret.yaml
   - ingress.yaml
-  - config-map-patch.yaml
-  - deployment-patch.yaml
 
 patches:
   - path: config-map-patch.yaml

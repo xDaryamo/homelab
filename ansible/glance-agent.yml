@@ -1,0 +1,103 @@
+---
+- name: Install Glance Agent
+  hosts: k3s_cluster
+  become: true
+  vars:
+    glance_agent_version: "v0.1.0"
+    glance_agent_arch: "{{ 'amd64' if ansible_facts['architecture'] == 'x86_64' else 'arm64' }}"
+    glance_agent_filename: "agent-linux-{{ glance_agent_arch }}.tar.gz"
+    glance_agent_download_url: "https://github.com/glanceapp/agent/releases/download/{{ glance_agent_version }}/{{ glance_agent_filename }}"
+    glance_agent_install_dir: "/usr/local/bin"
+    glance_agent_config_dir: "/etc/glance"
+
+  tasks:
+    - name: Ensure config directory exists
+      file:
+        path: "{{ glance_agent_config_dir }}"
+        state: directory
+        mode: '0755'
+
+    - name: Create temporary download directory
+      file:
+        path: /tmp/glance_agent_install
+        state: directory
+        mode: '0755'
+
+    - name: Download Glance Agent archive
+      get_url:
+        url: "{{ glance_agent_download_url }}"
+        dest: "/tmp/glance_agent_install/{{ glance_agent_filename }}"
+        mode: '0644'
+
+    - name: Extract Glance Agent
+      unarchive:
+        src: "/tmp/glance_agent_install/{{ glance_agent_filename }}"
+        dest: "/tmp/glance_agent_install"
+        remote_src: yes
+
+    - name: Install Glance Agent binary
+      copy:
+        src: "/tmp/glance_agent_install/agent"
+        dest: "{{ glance_agent_install_dir }}/glance-agent"
+        mode: '0755'
+        remote_src: yes
+
+    - name: Cleanup temporary files
+      file:
+        path: "/tmp/glance_agent_install"
+        state: absent
+
+    - name: Configure Glance Agent (agent.yml)
+      copy:
+        dest: "{{ glance_agent_config_dir }}/agent.yml"
+        content: |
+          server:
+            port: 27973
+            token: 
+
+          system:
+            hide-mountpoints-by-default: false
+            mountpoints:
+              "/":
+                hide: false
+                name: Root
+          {% if inventory_hostname == 'k8s-wp' %}
+              "/var/mnt/longhorn-hdd":
+                hide: false
+                name: Longhorn Disk
+          {% endif %}
+        mode: '0644'
+      notify: Restart Glance Agent
+
+    - name: Create Systemd Service
+      copy:
+        dest: /etc/systemd/system/glance-agent.service
+        content: |
+          [Unit]
+          Description=Glance Agent
+          After=network.target
+
+          [Service]
+          ExecStart={{ glance_agent_install_dir }}/glance-agent --config {{ glance_agent_config_dir }}/agent.yml
+          Restart=always
+          User=root
+          Environment=LOG_LEVEL=info
+
+          [Install]
+          WantedBy=multi-user.target
+        mode: '0644'
+      notify: Restart Glance Agent
+
+    - name: Enable and Start Glance Agent
+      systemd:
+        name: glance-agent
+        state: started
+        enabled: yes
+        daemon_reload: yes
+
+  handlers:
+    - name: Restart Glance Agent
+      systemd:
+        name: glance-agent
+        state: restarted
+        daemon_reload: yes

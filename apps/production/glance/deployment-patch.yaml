@@ -11,3 +11,5 @@ spec:
           envFrom:
             - secretRef:
                 name: glance-google-secret
+            - secretRef:
+                name: glance-github-secret

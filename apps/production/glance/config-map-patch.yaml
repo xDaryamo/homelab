@@ -162,8 +162,6 @@ data:
                     {{ end }}
                   {{ end }}
 
-              - type: rss
-                limit: 10
 
           - size: full
             widgets:
@@ -176,8 +174,7 @@ data:
                   - type: bookmarks
                     hide-header: true
                     groups:
-                      - title: Google
-                        icon: si:google
+                      - title: Apps
                         links:
                           - title: Gmail
                             url: https://mail.google.com
@@ -185,6 +182,9 @@ data:
                           - title: YouTube
                             url: https://youtube.com
                             icon: si:youtube
+                          - title: WhatsApp
+                            url: https://web.whatsapp.com
+                            icon: si:whatsapp
                           - title: Gemini
                             url: https://gemini.google.com
                             icon: si:googlegemini
@@ -192,10 +192,16 @@ data:
                             url: https://keep.google.com
                             icon: si:googlekeep
 
-              - type: group
-                widgets:
-                  - type: hacker-news
-                  - type: lobsters
+              - type: rss
+                title: NEWS
+                collapse-after: 3
+                limit: 10
+                cache: 1h
+                feeds:
+                  - url: https://www.ansa.it/sito/ansait_rss.xml
+                    title: ANSA
+                  - url: https://www.ilsole24ore.com/rss/mondo.xml
+                    title: Il Sole 24 Ore
 
               - type: videos
                 channels:

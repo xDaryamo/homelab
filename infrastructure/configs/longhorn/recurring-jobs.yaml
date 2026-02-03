@@ -1,0 +1,12 @@
+apiVersion: longhorn.io/v1beta2
+kind: RecurringJob
+metadata:
+  name: nightly-azure-backup
+  namespace: longhorn
+spec:
+  cron: "0 23 * * *"      # Runs every day at 23:00 (11 PM)
+  task: "backup"          # Action type: Backup to Azure Blob Storage
+  groups:
+  - critical-data         # Job group for volume assignment
+  retain: 7               # Keep the last 7 backups
+  concurrency: 1          # Limit concurrent backups to avoid network congestion

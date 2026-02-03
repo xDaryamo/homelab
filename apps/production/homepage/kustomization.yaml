@@ -8,4 +8,5 @@ resources:
 
 patches:
   - path: config-map-patch.yaml
+  - path: deployment-patch.yaml
 

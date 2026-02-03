@@ -27,6 +27,9 @@ spec:
       createDefaultDiskLabeledNodes: true
       storageReservedPercentageForDefaultDisk: 15
       defaultLonghornStaticStorageClass: "longhorn-ssd"
+    defaultBackupStore:
+      backupTarget: "s3://longhorn-backups@italynorth/"
+      backupTargetCredentialSecret: "longhorn-backup-secret"
     persistence:
       defaultClass: false
 

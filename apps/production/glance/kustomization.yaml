@@ -4,7 +4,11 @@ namespace: glance
 resources:
   - ../../base/glance
   - namespace.yaml
+  - google-secret.yaml
+  - github-secret.yaml
+  - steam-secret.yaml
   - ingress.yaml
 
 patches:
   - path: config-map-patch.yaml
+  - path: deployment-patch.yaml

@@ -9,10 +9,10 @@ metadata:
 spec:
   tls:
     - hosts:
-        - homepage.dariomazza.net
+        - home.dariomazza.net
       secretName: glance-tls
   rules:
-    - host: "homepage.dariomazza.net"
+    - host: "home.dariomazza.net"
       http:
         paths:
           - path: "/"

@@ -125,7 +125,7 @@ This project leverages a modern Cloud Native stack to ensure performance, securi
 | Logo | Application | Description |
 | :---: | :--- | :--- |
 | <img src="https://dariomazza.net/favicon.ico" width="40"> | [**Portfolio**](https://dariomazza.net) | My personal developer portfolio and resume site. |
-| <img src="https://avatars.githubusercontent.com/u/122929872" width="40"> | **Homepage** | A modern, highly customizable dashboard for my homelab. |
+| <img src="https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/png/glance.png" width="40"> | [**Glance**](https://github.com/glance-launcher/glance) | A self-hosted dashboard that puts all your services in one place. |
 | <img src="https://docs.vocard.xyz/2.7.2/assets/logo.png" width="40"> | [**Vocard**](https://github.com/ChocoMeow/Vocard-Dashboard) | A feature-rich Discord music bot. Its microservices stack includes **Lavalink** for audio processing and **MongoDB** for data persistence. |
 
 ## ⚡ Bootstrap & Disaster Recovery

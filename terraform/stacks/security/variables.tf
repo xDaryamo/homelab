@@ -9,3 +9,9 @@ variable "key_vault_name" {
   type        = string
   default     = "kv-dariomazza-homelab" 
 }
+
+variable "grafana_url" {
+  description = "The public URL for Grafana"
+  type        = string
+  default     = "https://grafana.dariomazza.net"
+}

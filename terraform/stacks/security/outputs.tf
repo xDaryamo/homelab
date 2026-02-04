@@ -22,3 +22,18 @@ output "sp_client_secret" {
   value     = azuread_service_principal_password.external_secrets.value
   sensitive = true
 }
+
+# --- Grafana Auth Outputs ---
+
+output "grafana_client_id" {
+  value = azuread_application.grafana.client_id
+}
+
+output "grafana_client_secret" {
+  value     = azuread_application_password.grafana.value
+  sensitive = true
+}
+
+output "grafana_tenant_id" {
+  value = data.azurerm_client_config.current.tenant_id
+}

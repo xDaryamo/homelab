@@ -3,3 +3,4 @@ kind: Kustomization
 namespace: monitoring
 resources:
   - grafana-secret.yaml
+  - grafana-auth-external-secret.yaml

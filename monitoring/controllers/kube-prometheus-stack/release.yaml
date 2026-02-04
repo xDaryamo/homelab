@@ -29,27 +29,27 @@ spec:
       
       # Explicitly map secrets to environment variables since envFrom is not being applied
       env:
-        GF_AUTH_AZUREAD_CLIENT_ID:
+        - name: GF_AUTH_AZUREAD_CLIENT_ID
           valueFrom:
             secretKeyRef:
               name: grafana-azuread-creds
               key: GF_AUTH_AZUREAD_CLIENT_ID
-        GF_AUTH_AZUREAD_CLIENT_SECRET:
+        - name: GF_AUTH_AZUREAD_CLIENT_SECRET
           valueFrom:
             secretKeyRef:
               name: grafana-azuread-creds
               key: GF_AUTH_AZUREAD_CLIENT_SECRET
-        GF_AUTH_AZUREAD_AUTH_URL:
+        - name: GF_AUTH_AZUREAD_AUTH_URL
           valueFrom:
             secretKeyRef:
               name: grafana-azuread-creds
               key: GF_AUTH_AZUREAD_AUTH_URL
-        GF_AUTH_AZUREAD_TOKEN_URL:
+        - name: GF_AUTH_AZUREAD_TOKEN_URL
           valueFrom:
             secretKeyRef:
               name: grafana-azuread-creds
               key: GF_AUTH_AZUREAD_TOKEN_URL
-        GF_AUTH_AZUREAD_ALLOWED_ORGANIZATIONS:
+        - name: GF_AUTH_AZUREAD_ALLOWED_ORGANIZATIONS
           valueFrom:
             secretKeyRef:
               name: grafana-azuread-creds

@@ -9,3 +9,4 @@ resources:
   - renovate
   - longhorn
   - oauth2-proxy
+  - private-homelab

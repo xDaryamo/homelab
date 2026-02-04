@@ -6,6 +6,8 @@ metadata:
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt-prod
     external-dns.alpha.kubernetes.io/cloudflare-proxied: "false"
+    nginx.ingress.kubernetes.io/auth-url: "https://auth.dariomazza.net/oauth2/auth"
+    nginx.ingress.kubernetes.io/auth-signin: "https://auth.dariomazza.net/oauth2/start?rd=$scheme://$host$escaped_request_uri"
 spec:
   ingressClassName: nginx
   tls:

@@ -9,3 +9,4 @@ resources:
   - cloudflared
   - external-dns
   - external-secrets
+  - oauth2-proxy

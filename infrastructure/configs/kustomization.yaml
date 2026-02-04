@@ -8,3 +8,4 @@ resources:
   - external-dns
   - renovate
   - longhorn
+  - oauth2-proxy

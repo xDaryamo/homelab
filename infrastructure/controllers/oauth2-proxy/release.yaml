@@ -1,0 +1,59 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: oauth2-proxy
+  namespace: oauth2-proxy
+spec:
+  interval: 15m
+  chart:
+    spec:
+      chart: oauth2-proxy
+      version: 7.10.x
+      sourceRef:
+        kind: HelmRepository
+        name: oauth2-proxy
+        namespace: oauth2-proxy
+  install:
+    createNamespace: true
+    remediation:
+      retries: 3
+  upgrade:
+    remediation:
+      retries: 3
+  values:
+    config:
+      existingSecret: oauth2-proxy-secret
+      configFile: |-
+        email_domains = [ "*" ]
+        upstreams = [ "file:///dev/null" ]
+        provider = "azure"
+        # Azure specific config
+        oidc_issuer_url = "https://login.microsoftonline.com/c30767db-3dda-4dd4-8a4d-097d22cb99d3/v2.0"
+        cookie_domains = [ ".dariomazza.net" ]
+        whitelist_domains = [ ".dariomazza.net" ]
+        cookie_secure = true
+        cookie_httponly = true
+        cookie_samesite = "lax"
+        reverse_proxy = true
+        pass_user_headers = true
+        pass_access_token = true
+        set_authorization_header = true
+        set_xauthrequest = true
+
+    ingress:
+      enabled: true
+      className: nginx
+      path: /oauth2
+      hosts:
+        - auth.dariomazza.net
+      tls:
+        - secretName: oauth2-proxy-tls
+          hosts:
+            - auth.dariomazza.net
+      annotations:
+        cert-manager.io/cluster-issuer: letsencrypt-prod
+        external-dns.alpha.kubernetes.io/cloudflare-proxied: "false"
+
+    # We will provide these via the secret
+    extraArgs:
+      - --cookie-name=_oauth2_proxy

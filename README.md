@@ -35,24 +35,47 @@ graph TD
 
     subgraph "Azure Cloud"
         tf -->|Manage| kv[Azure Key Vault]
+        tf -->|Manage| st[Azure Blob Storage]
+        tf -->|Manage| ent[Microsoft Entra ID]
     end
 
     subgraph "Bare Metal Cluster"
         flux[Flux CD] -->|Watch & Pull| git
         flux -->|Reconcile| k3s[K3s Cluster]
-        k3s -->|Deploy| app[Applications]
+        renovate[Renovate Bot] -.->|Pull Requests| git
+
+        subgraph "Observability"
+            prom[Prometheus]
+            graf[Grafana]
+        end
+        
+        subgraph "Protected Services"
+            app[Applications]
+            admin[Infrastructure UIs]
+        end
+        
         eso[External Secrets] -.->|Fetch Secrets| kv
         cilium[Cilium CNI] -.->|Pod Networking / eBPF| app
+        lh[Longhorn Storage] -->|Offsite Backup| st
+        oauth[OAuth2 Proxy] -.->|Authenticate| ent
+
+        k3s --> prom
+        prom --> graf
     end
     
     client[External Client] -->|HTTPS| cf[Cloudflare Zero Trust]
     cf -->|Tunnel| ingress[Ingress NGINX]
+    ingress -->|Auth Check| oauth
+    oauth -.->|Secure Access| app
+    oauth -.->|Secure Access| admin
     ingress -->|Route| app
+    ingress -->|Route| admin
+    ingress -->|Route| graf
 ```
 
 *   **Provisioning:**
     *   **Bare Metal:** I use **Ansible** to bootstrap the physical Debian nodes.
-    *   **Cloud Infrastructure:** I use **Terraform** to manage Azure resources (Key Vault, Identities) as code, ensuring a reproducible hybrid environment.
+    *   **Cloud Infrastructure:** I use **Terraform** to manage Azure resources (Key Vault, Identities, Storage) as code, ensuring a reproducible hybrid environment.
 *   **Orchestration:** **K3s** is my distribution of choice for its lightweight footprint.
 *   **GitOps:** **Flux** monitors this repository and automatically reconciles the cluster state.
 
@@ -61,7 +84,8 @@ graph TD
 *   **Public vs. Private Architecture:** I utilize a multi-source GitOps strategy. This public repository manages the infrastructure and open-source stack, while a linked **Private Repository** handles sensitive workloads and personal data. Flux seamlessly reconciles both streams, allowing me to share my work publicly while keeping private data secure.
 *   **Access Strategy:** I prioritize security and simplicity for service access:
     *   **Internal Access:** Services are accessible directly within the local network or remotely via **Tailscale**, which provides a secure Mesh VPN layer.
-    *   **Public Access:** Specific services are exposed via **Cloudflare Zero Trust**, leveraging Cloudflare Authentication to ensure only authorized users can reach them without needing a traditional VPN.
+    *   **Public Access:** Specific services are exposed via **Cloudflare Zero Trust** or protected by **OAuth2 Proxy** integrated with **Microsoft Entra ID**, ensuring that only authorized users can reach sensitive endpoints.
+*   **Backup & Disaster Recovery:** I implement a 3-2-1 backup strategy. **Longhorn** manages local volume replication, while critical data is periodically backed up to **Azure Blob Storage** to ensure recovery in case of hardware failure.
 *   **Bare Metal vs. Virtualization:** To maximize the performance of my hardware, I opted for a **Bare Metal** installation instead of using a virtualization layer like Proxmox. This avoids the overhead of an hypervisor, which is critical given the resources of my mini PCs, and ensures that the cluster remains performant for both experimentation and private services.
 
 ## 📂 Repository Structure
@@ -73,7 +97,8 @@ The repository mimics a standard enterprise monorepo structure, separating conce
 ├── 📂 apps/           # Application manifests (Base, Staging, Production overlays)
 ├── 📂 clusters/       # Flux Cluster definitions (entry point for GitOps)
 ├── 📂 infrastructure/ # Infrastructure components (Ingress, Cert-Manager, Cilium)
-└── 📂 monitoring/     # Observability stack (Prometheus, Grafana)
+├── 📂 monitoring/     # Observability stack (Prometheus, Grafana)
+└── 📂 terraform/      # Cloud Infrastructure as Code (Azure)
 ```
 
 ## 💻 Hardware
@@ -94,8 +119,8 @@ This project leverages a modern Cloud Native stack to ensure performance, securi
 
 | Logo | Technology | Purpose |
 | :---: | :--- | :--- |
-| <img src="https://cdn.simpleicons.org/terraform" width="40"> | [**Terraform**](https://www.terraform.io/) | **Infrastructure as Code.** Provisions and manages Azure resources (Key Vault, IAM) to ensure a reproducible cloud environment. |
-| <img src="https://avatars.githubusercontent.com/u/6844498?s=200&v=4" width="40"> | [**Microsoft Azure**](https://azure.microsoft.com/) | **Cloud Provider.** Hosts the Key Vault for secret management, integrating enterprise-grade security into the homelab. |
+| <img src="https://cdn.simpleicons.org/terraform" width="40"> | [**Terraform**](https://www.terraform.io/) | **Infrastructure as Code.** Provisions and manages Azure resources (Key Vault, IAM, Storage) to ensure a reproducible cloud environment. |
+| <img src="https://avatars.githubusercontent.com/u/6844498?s=200&v=4" width="40"> | [**Microsoft Azure**](https://azure.microsoft.com/) | **Cloud Provider.** Hosts Key Vault for secrets, Entra ID for OAuth, and Blob Storage for offsite backups. |
 | <img src="https://cdn.simpleicons.org/ansible" width="40"> | [**Ansible**](https://www.ansible.com/) | **Configuration Management.** Automates the provisioning and hardening of the bare metal Debian servers. |
 
 ### Infrastructure & Networking
@@ -106,16 +131,16 @@ This project leverages a modern Cloud Native stack to ensure performance, securi
 | <img src="https://cdn.simpleicons.org/cilium" width="40"> | [**Cilium**](https://cilium.io/) | **CNI & Security.** Uses eBPF for high-performance networking and L2 announcements. |
 | <img src="https://cdn.simpleicons.org/flux" width="40"> | [**Flux**](https://fluxcd.io/) | **GitOps.** Automates deployment and lifecycle management. |
 | <img src="https://cdn.simpleicons.org/nginx" width="40"> | [**Ingress NGINX**](https://kubernetes.github.io/ingress-nginx/) | **Ingress Controller.** Handles internal HTTP/HTTPS routing. |
+| <img src="https://cdn.jsdelivr.net/gh/selfhst/icons@main/svg/oauth2-proxy.svg" width="40"> | [**OAuth2 Proxy**](https://oauth2-proxy.github.io/oauth2-proxy/) | **Identity & Access.** Integrated with **Microsoft Entra ID** to provide secure OIDC authentication for internal services. |
 | <img src="https://cdn.simpleicons.org/cloudflare" width="40"> | [**Cloudflare Zero Trust**](https://www.cloudflare.com/products/zero-trust/) | **Security & Access.** Provides secure access to internal applications and the cluster without a VPN. |
 | <img src="https://raw.githubusercontent.com/cert-manager/cert-manager/master/logo/logo-small.png" width="40"> | [**Cert-Manager**](https://cert-manager.io/) | **Security.** Automates issuance and renewal of Let's Encrypt SSL certificates. |
 | <img src="https://cdn.simpleicons.org/kubernetes" width="40"> | [**ExternalDNS**](https://github.com/kubernetes-sigs/external-dns) | **DNS Automation.** Synchronizes exposed Kubernetes services and ingresses with DNS providers. |
-| <img src="https://cdn.simpleicons.org/pihole" width="40"> | [**Pi-hole**](https://pi-hole.net/) | **Network DNS.** Runs in a Docker container outside K3s to ensure home internet stability during cluster maintenance. |
 
 ### Storage & Observability
 
 | Logo | Technology | Purpose |
 | :---: | :--- | :--- |
-| <img src="https://avatars.githubusercontent.com/u/51335366?s=200&v=4" width="40"> | [**Longhorn**](https://longhorn.io/) | **Distributed Block Storage.** Provides highly available persistent storage for stateful workloads. |
+| <img src="https://avatars.githubusercontent.com/u/51335366?s=200&v=4" width="40"> | [**Longhorn**](https://longhorn.io/) | **Distributed Block Storage.** Provides highly available persistent storage with automated offsite backups to Azure. |
 | <img src="https://cdn.simpleicons.org/prometheus" width="40"> | [**Prometheus**](https://prometheus.io/) | **Metrics.** Scrapes and stores metrics from all cluster components. |
 | <img src="https://cdn.simpleicons.org/grafana" width="40"> | [**Grafana**](https://grafana.com/) | **Visualization.** Dashboards for monitoring cluster health and performance. |
 | <img src="https://avatars.githubusercontent.com/u/38656520?s=200&v=4" width="40"> | [**Renovate**](https://renovatebot.com/) | **Automation.** Automatically creates Pull Requests to update dependencies. |
@@ -126,6 +151,7 @@ This project leverages a modern Cloud Native stack to ensure performance, securi
 | :---: | :--- | :--- |
 | <img src="https://dariomazza.net/favicon.ico" width="40"> | [**Portfolio**](https://dariomazza.net) | My personal developer portfolio and resume site. |
 | <img src="https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/png/glance.png" width="40"> | [**Glance**](https://github.com/glance-launcher/glance) | A self-hosted dashboard that puts all your services in one place. |
+| <img src="https://cdn.jsdelivr.net/gh/selfhst/icons@main/svg/oauth2-proxy.svg" width="40"> | [**OAuth2 Proxy**](https://auth.dariomazza.net) | Secure gateway for internal applications using Microsoft Entra ID. |
 | <img src="https://docs.vocard.xyz/2.7.2/assets/logo.png" width="40"> | [**Vocard**](https://github.com/ChocoMeow/Vocard-Dashboard) | A feature-rich Discord music bot. Its microservices stack includes **Lavalink** for audio processing and **MongoDB** for data persistence. |
 
 ## ⚡ Bootstrap & Disaster Recovery

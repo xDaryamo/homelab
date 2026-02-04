@@ -297,10 +297,16 @@ data:
                       - title: Cloudflare Dashboard
                         url: https://dash.cloudflare.com/
                         icon: sh:cloudflare
+                      - title: Azure Portal
+                        url: https://portal.azure.com/
+                        icon: sh:microsoft-azure
                   - links:
                       - title: Fritz!Box
                         url: http://192.168.1.1
                         icon: si:fritz
+                      - title: AWS Console
+                        url: https://eu-south-1.console.aws.amazon.com/console/home
+                        icon: sh:amazon-web-services
         
               - type: group
                 widgets:

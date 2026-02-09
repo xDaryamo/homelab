@@ -38,7 +38,7 @@ spec:
     - metadata:
         name: mongodb-data
         labels:
-          recurring-job-group.longhorn.io/critical-data: "enabled"
+          recurring-job.longhorn.io/group: critical-data
       spec:
         accessModes: [ "ReadWriteOnce" ]
         storageClassName: longhorn-ssd

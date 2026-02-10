@@ -8,5 +8,6 @@ spec:
   task: "backup"          # Action type: Backup to Azure Blob Storage
   groups:
   - critical-data         # Job group for volume assignment
+  - default               # Added to match existing volume labels
   retain: 7               # Keep the last 7 backups
   concurrency: 1          # Limit concurrent backups to avoid network congestion

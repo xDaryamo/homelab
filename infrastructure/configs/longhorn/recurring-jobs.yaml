@@ -9,5 +9,5 @@ spec:
   groups:
   - critical-data         # Job group for volume assignment
   - default               # Added to match existing volume labels
-  retain: 7               # Keep the last 7 backups
+  retain: 3               # Keep the last 3 backups to save costs
   concurrency: 1          # Limit concurrent backups to avoid network congestion

@@ -28,7 +28,7 @@ spec:
       storageReservedPercentageForDefaultDisk: 15
       defaultLonghornStaticStorageClass: "longhorn-ssd"
     defaultBackupStore:
-      backupTarget: "azblob://longhorn-backups@stdariomazzahomelab"
+      backupTarget: "azblob://longhorn-backups@stdariomazzahomelab/"
       backupTargetCredentialSecret: "longhorn-backup-secret"
     persistence:
       defaultClass: false

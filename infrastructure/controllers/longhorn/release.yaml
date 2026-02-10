@@ -27,6 +27,7 @@ spec:
       createDefaultDiskLabeledNodes: true
       storageReservedPercentageForDefaultDisk: 15
       defaultLonghornStaticStorageClass: "longhorn-ssd"
+      backupstorePollInterval: 43200
     defaultBackupStore:
       backupTarget: "azblob://longhorn-backups@core.windows.net/"
       backupTargetCredentialSecret: "longhorn-backup-secret"

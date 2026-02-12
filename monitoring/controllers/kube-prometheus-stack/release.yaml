@@ -65,6 +65,8 @@ spec:
         enabled: true
         size: 5Gi
         storageClassName: "longhorn-ssd"
+        labels:
+          recurring-job-group.longhorn.io/critical-data: enabled
 
     prometheus:
       prometheusSpec:

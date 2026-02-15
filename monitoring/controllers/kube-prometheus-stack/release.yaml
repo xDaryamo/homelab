@@ -12,7 +12,7 @@ spec:
         kind: HelmRepository
         name: prometheus-community
         namespace: monitoring
-      version: "81.6.1"
+      version: "82.0.0"
   install:
     crds: CreateReplace
     remediation:

@@ -6,7 +6,7 @@ kubectl = "latest"
 helm = "latest"
 k9s = "latest"
 kustomize = "latest"
-flux2 = "2.7.5"
+flux2 = "2.8.1"
 
 age = "latest"
 yq = "latest"

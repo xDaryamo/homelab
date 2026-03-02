@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: lavalink
-          image: ghcr.io/lavalink-devs/lavalink:4.1.2
+          image: ghcr.io/lavalink-devs/lavalink:4.2.1
           imagePullPolicy: IfNotPresent
           env:
             - name: _JAVA_OPTIONS

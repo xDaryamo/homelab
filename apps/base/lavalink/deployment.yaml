@@ -21,8 +21,6 @@ spec:
           env:
             - name: _JAVA_OPTIONS
               value: "-Xmx1G"
-            - name: LAVALINK_PLUGINS_0_DEPENDENCY
-              value: "dev.lavalink.youtube:youtube-plugin:1.18.0"
           ports:
             - containerPort: 2333
               name: http

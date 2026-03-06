@@ -31,7 +31,7 @@ spec:
               mountPath: /app-lavalink
       containers:
         - name: vocard
-          image: ghcr.io/chocomeow/vocard:latest
+          image: ghcr.io/chocomeow/vocard:beta
           command: ["sh", "-c", "until python3 -c 'import socket; s = socket.socket(); s.connect((\"127.0.0.1\", 2333))' 2>/dev/null; do echo 'Waiting for Lavalink...'; sleep 1; done; python3 main.py"]
           volumeMounts:
             - name: settings-volume
@@ -45,7 +45,7 @@ spec:
               memory: "512Mi"
 
         - name: lavalink
-          image: ghcr.io/lavalink-devs/lavalink:latest
+          image: ghcr.io/lavalink-devs/lavalink:4.2.0
           env:
             - name: _JAVA_OPTIONS
               value: "-Xmx1G"

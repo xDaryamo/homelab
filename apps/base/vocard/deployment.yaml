@@ -32,7 +32,7 @@ spec:
       containers:
         - name: vocard
           image: ghcr.io/chocomeow/vocard:v2.7.2
-          command: ["sh", "-c", "until nc -z localhost 2333; do echo 'Waiting for Lavalink...'; sleep 1; done; python main.py"]
+          command: ["sh", "-c", "until python3 -c 'import socket; s = socket.socket(); s.connect((\"127.0.0.1\", 2333))' 2>/dev/null; do echo 'Waiting for Lavalink...'; sleep 1; done; python3 main.py"]
           ports:
             - containerPort: 8000
               name: http

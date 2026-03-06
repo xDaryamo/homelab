@@ -19,8 +19,7 @@ spec:
       initContainers:
         - name: init-config
           image: busybox:latest
-          command: |
-            sh -c 'cp /config-vocard/settings.json /app-vocard/settings.json && cp /config-lavalink/application.yml /app-lavalink/application.yml'
+          command: ["sh", "-c", "cp /config-vocard/settings.json /app-vocard/settings.json && cp /config-lavalink/application.yml /app-lavalink/application.yml"]
           volumeMounts:
             - name: settings-secret
               mountPath: /config-vocard

@@ -51,7 +51,7 @@ spec:
           imagePullPolicy: IfNotPresent
           env:
             - name: _JAVA_OPTIONS
-              value: "-Xmx1G"
+              value: "-Xmx1G -Dlavalink.server.koe.nas-helper=false"
           ports:
             - containerPort: 2333
               name: http

@@ -31,11 +31,8 @@ spec:
               mountPath: /app-lavalink
       containers:
         - name: vocard
-          image: ghcr.io/chocomeow/vocard:v2.7.2
+          image: ghcr.io/chocomeow/vocard:latest
           command: ["sh", "-c", "until python3 -c 'import socket; s = socket.socket(); s.connect((\"127.0.0.1\", 2333))' 2>/dev/null; do echo 'Waiting for Lavalink...'; sleep 1; done; python3 main.py"]
-          ports:
-            - containerPort: 8000
-              name: http
           volumeMounts:
             - name: settings-volume
               mountPath: /app/settings.json
@@ -46,12 +43,14 @@ spec:
               cpu: "100m"
             limits:
               memory: "512Mi"
+
         - name: lavalink
-          image: ghcr.io/lavalink-devs/lavalink:4.1.2
-          imagePullPolicy: IfNotPresent
+          image: ghcr.io/lavalink-devs/lavalink:latest
           env:
             - name: _JAVA_OPTIONS
-              value: "-Xmx1G -Dlavalink.server.koe.nas-helper=false"
+              value: "-Xmx1G"
+            - name: SERVER_PORT
+              value: "2333"
           ports:
             - containerPort: 2333
               name: http
@@ -65,6 +64,26 @@ spec:
               memory: 512Mi
             limits:
               memory: 1Gi
+          livenessProbe:
+            tcpSocket:
+              port: 2333
+            initialDelaySeconds: 20
+            periodSeconds: 10
+
+        - name: spotify-tokener
+          image: ghcr.io/topi314/spotify-tokener:master
+          env:
+            - name: SPOTIFY_TOKENER_ADDR
+              value: "0.0.0.0:49152"
+          ports:
+            - containerPort: 49152
+              name: tokener
+          livenessProbe:
+            tcpSocket:
+              port: 49152
+            initialDelaySeconds: 10
+            periodSeconds: 10
+
       volumes:
         - name: settings-secret
           secret:

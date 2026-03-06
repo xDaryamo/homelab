@@ -6,3 +6,4 @@ resources:
   - namespace.yaml
   - mongodb-secret.yaml
   - vocard-settings.yaml
+  - lavalink-config.yaml

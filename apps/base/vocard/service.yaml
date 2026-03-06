@@ -1,14 +1,14 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: lavalink
+  name: vocard
   labels:
-    app: lavalink
+    app: vocard
 spec:
   ports:
-    - port: 2333
-      targetPort: 2333
+    - port: 8000
+      targetPort: 8000
       name: http
   selector:
-    app: lavalink
+    app: vocard
   type: ClusterIP

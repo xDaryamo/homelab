@@ -19,12 +19,17 @@ spec:
       initContainers:
         - name: init-config
           image: busybox:latest
-          command: ['sh', '-c', 'cp /config/settings.json /app/settings.json']
+          command: |
+            sh -c 'cp /config-vocard/settings.json /app-vocard/settings.json && cp /config-lavalink/application.yml /app-lavalink/application.yml'
           volumeMounts:
             - name: settings-secret
-              mountPath: /config
+              mountPath: /config-vocard
             - name: settings-volume
-              mountPath: /app
+              mountPath: /app-vocard
+            - name: lavalink-config-secret
+              mountPath: /config-lavalink
+            - name: lavalink-config-volume
+              mountPath: /app-lavalink
       containers:
         - name: vocard
           image: ghcr.io/chocomeow/vocard:v2.7.2
@@ -41,9 +46,33 @@ spec:
               cpu: "100m"
             limits:
               memory: "512Mi"
+        - name: lavalink
+          image: ghcr.io/lavalink-devs/lavalink:4.1.2
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: _JAVA_OPTIONS
+              value: "-Xmx1G"
+          ports:
+            - containerPort: 2333
+              name: http
+          volumeMounts:
+            - name: lavalink-config-volume
+              mountPath: /opt/Lavalink/application.yml
+              subPath: application.yml
+          resources:
+            requests:
+              cpu: 100m
+              memory: 512Mi
+            limits:
+              memory: 1Gi
       volumes:
         - name: settings-secret
           secret:
             secretName: vocard-settings
         - name: settings-volume
+          emptyDir: {}
+        - name: lavalink-config-secret
+          secret:
+            secretName: lavalink-config
+        - name: lavalink-config-volume
           emptyDir: {}

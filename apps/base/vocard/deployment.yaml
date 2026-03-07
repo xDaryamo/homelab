@@ -45,7 +45,7 @@ spec:
               memory: "512Mi"
 
         - name: lavalink
-          image: ghcr.io/lavalink-devs/lavalink:4.2.1
+          image: ghcr.io/lavalink-devs/lavalink:4.2.2
           env:
             - name: _JAVA_OPTIONS
               value: "-Xmx1G"

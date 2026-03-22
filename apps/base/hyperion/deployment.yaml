@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: hyperion
+  name: hyperion
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: hyperion
+  template:
+    metadata:
+      labels:
+        app: hyperion
+    spec:
+      containers:
+      - name: hyperion-ng
+        image: sirfragalot/hyperion.ng:2.2.0
+        ports:
+        - containerPort: 8090
+          name: web-ui
+        - containerPort: 19444
+          name: json-api
+        - containerPort: 19445
+          name: proto-grabber
+        - containerPort: 19400
+          name: flat-buffer
+        volumeMounts:
+        - name: config-volume
+          mountPath: /root/.hyperion
+      volumes:
+      - name: config-volume
+        persistentVolumeClaim:
+          claimName: hyperion-pvc

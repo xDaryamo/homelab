@@ -4,11 +4,11 @@ namespace: portfolio-staging
 resources:
   - ../../base/portfolio
   - namespace.yaml
+  - ingress.yaml
 
 namePrefix: staging-
 
 patches:
-  - path: ingress.yaml
   - path: scaling.yaml
 
 images:

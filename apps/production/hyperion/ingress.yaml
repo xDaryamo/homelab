@@ -1,0 +1,23 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: hyperion
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    external-dns.alpha.kubernetes.io/cloudflare-proxied: "false"
+spec:
+  tls:
+  - hosts:
+    - hyperion.dariomazza.net 
+    secretName: hyperion-tls
+  rules:
+  - host: hyperion.dariomazza.net
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: hyperion
+            port:
+              number: 8090

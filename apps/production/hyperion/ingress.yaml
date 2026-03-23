@@ -8,16 +8,27 @@ metadata:
 spec:
   tls:
   - hosts:
-    - hyperion.dariomazza.net 
+    - hyperion-sx.dariomazza.net
+    - hyperion-dx.dariomazza.net
     secretName: hyperion-tls
   rules:
-  - host: hyperion.dariomazza.net
+  - host: hyperion-sx.dariomazza.net
     http:
       paths:
       - path: /
         pathType: Prefix
         backend:
           service:
-            name: hyperion
+            name: hyperion-sx
+            port:
+              number: 8090
+  - host: hyperion-dx.dariomazza.net
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: hyperion-dx
             port:
               number: 8090

@@ -88,3 +88,5 @@ spec:
             [runners.kubernetes]
               image = "ubuntu:22.04"
               privileged = true
+    certmanager-issuer:
+      email: mr.dario.mazza@gmail.com

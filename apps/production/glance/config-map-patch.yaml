@@ -64,11 +64,11 @@ data:
                         {{ .String "summary" }}
                       </a>
                       <a href="https://calendar.google.com/calendar/u/0" target="_blank" class="size-h3" style="text-align: left;">
-                        {{ $start | formatTime "Mon, Jan 2 · 3:04 PM" }} 
+                        {{ $start | formatTime "Mon, Jan 2 · 3:04 PM" }} 
                         {{ if $isStartAndEndDateSame }}
-                            - {{ $end | formatTime "3:04 PM" }}
+                            - {{ $end | formatTime "3:04 PM" }}
                           {{ else }}
-                            - {{ $end | formatTime "Mon, Jan 2 · 3:04 PM" }}
+                            - {{ $end | formatTime "Mon, Jan 2 · 3:04 PM" }}
                         {{ end }}
                       </a>
                       <div class="color-primary size-h3" style="text-align: right; width: 75px;" {{ $start | toRelativeTime }}>

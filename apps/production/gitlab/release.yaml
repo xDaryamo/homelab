@@ -1,0 +1,90 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: gitlab
+  namespace: gitlab
+spec:
+  releaseName: gitlab
+  chart:
+    spec:
+      chart: gitlab
+      version: ">= 7.0.0"
+      sourceRef:
+        kind: HelmRepository
+        name: gitlab
+        namespace: flux-system
+  interval: 1h
+  values:
+    global:
+      hosts:
+        domain: dariomazza.net
+        gitlab:
+          name: gitlab.dariomazza.net
+        registry:
+          name: registry.dariomazza.net
+        kas:
+          name: kas.dariomazza.net
+      ingress:
+        configureCertmanager: true
+        class: nginx
+        annotations:
+          cert-manager.io/cluster-issuer: letsencrypt-prod
+          kubernetes.io/tls-acme: "true"
+      prometheus:
+        install: false
+      grafana:
+        install: false
+      certmanager:
+        install: false
+      nginx-ingress:
+        enabled: false
+      minio:
+        enabled: true
+    
+    gitlab:
+      webservice:
+        minReplicas: 1
+        maxReplicas: 2
+      sidekiq:
+        minReplicas: 1
+        maxReplicas: 1
+      kas:
+        enabled: true
+      gitaly:
+        persistence:
+          size: 20Gi
+          storageClass: longhorn
+
+    registry:
+      enabled: true
+      persistence:
+        size: 20Gi
+        storageClass: longhorn
+
+    minio:
+      persistence:
+        size: 10Gi
+        storageClass: longhorn
+
+    postgresql:
+      install: true
+      persistence:
+        size: 10Gi
+        storageClass: longhorn
+
+    redis:
+      install: true
+      persistence:
+        size: 5Gi
+        storageClass: longhorn
+
+    gitlab-runner:
+      install: true
+      rbac:
+        create: true
+      runners:
+        config: |
+          [[runners]]
+            [runners.kubernetes]
+              image = "ubuntu:22.04"
+              privileged = true

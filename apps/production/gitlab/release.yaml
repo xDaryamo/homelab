@@ -60,13 +60,6 @@ spec:
 
     registry:
       enabled: true
-      ingress:
-        annotations:
-          nginx.ingress.kubernetes.io/proxy-body-size: "0"
-          nginx.ingress.kubernetes.io/proxy-buffering: "off"
-          nginx.ingress.kubernetes.io/proxy-request-buffering: "off"
-          nginx.ingress.kubernetes.io/proxy-read-timeout: "900"
-          nginx.ingress.kubernetes.io/proxy-send-timeout: "900"
       persistence:
         size: 20Gi
         storageClass: longhorn

@@ -61,6 +61,13 @@ spec:
 
     registry:
       enabled: true
+      ingress:
+        annotations:
+          nginx.ingress.kubernetes.io/proxy-body-size: "0"
+          nginx.ingress.kubernetes.io/proxy-buffering: "off"
+          nginx.ingress.kubernetes.io/proxy-request-buffering: "off"
+          nginx.ingress.kubernetes.io/proxy-read-timeout: "900"
+          nginx.ingress.kubernetes.io/proxy-send-timeout: "900"
       persistence:
         size: 20Gi
         storageClass: longhorn
@@ -86,6 +93,11 @@ spec:
       install: true
       rbac:
         create: true
+      hostAliases:
+        - ip: "192.168.1.200"
+          hostnames:
+            - "registry.dariomazza.net"
+            - "gitlab.dariomazza.net"
       runners:
         config: |
           [[runners]]

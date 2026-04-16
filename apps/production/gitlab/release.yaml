@@ -32,6 +32,11 @@ spec:
           kubernetes.io/tls-acme: "true"
           external-dns.alpha.kubernetes.io/cloudflare-proxied: "true"
           external-dns.alpha.kubernetes.io/target: "e859d444-74bb-4e45-8426-1e6141995ed9.cfargotunnel.com"
+          nginx.ingress.kubernetes.io/proxy-body-size: "0"
+          nginx.ingress.kubernetes.io/proxy-buffering: "off"
+          nginx.ingress.kubernetes.io/proxy-request-buffering: "off"
+          nginx.ingress.kubernetes.io/proxy-read-timeout: "900"
+          nginx.ingress.kubernetes.io/proxy-send-timeout: "900"
       appConfig:
         signupEnabled: false
       kas:
@@ -60,13 +65,6 @@ spec:
 
     registry:
       enabled: true
-      ingress:
-        annotations:
-          nginx.ingress.kubernetes.io/proxy-body-size: "0"
-          nginx.ingress.kubernetes.io/proxy-buffering: "off"
-          nginx.ingress.kubernetes.io/proxy-request-buffering: "off"
-          nginx.ingress.kubernetes.io/proxy-read-timeout: "900"
-          nginx.ingress.kubernetes.io/proxy-send-timeout: "900"
       persistence:
         size: 20Gi
         storageClass: longhorn

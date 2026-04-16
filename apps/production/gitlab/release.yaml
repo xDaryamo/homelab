@@ -93,6 +93,7 @@ spec:
             - "registry.dariomazza.net"
             - "gitlab.dariomazza.net"
       runners:
+        privileged: true
         config: |
           [[runners]]
             [runners.kubernetes]

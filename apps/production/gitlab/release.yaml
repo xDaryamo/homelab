@@ -72,6 +72,8 @@ spec:
     postgresql:
       install: true
       primary:
+        extendedConfiguration: |
+          max_connections = 200
         persistence:
           size: 10Gi
           storageClass: longhorn

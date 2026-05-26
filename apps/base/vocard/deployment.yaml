@@ -29,6 +29,9 @@ spec:
               mountPath: /config-lavalink
             - name: lavalink-config-volume
               mountPath: /app-lavalink
+        - name: init-wait-mongodb
+          image: busybox:latest
+          command: ["sh", "-c", "until nc -z mongodb 27017; do echo 'Waiting for MongoDB...'; sleep 2; done"]
       containers:
         - name: vocard
           image: ghcr.io/chocomeow/vocard:beta

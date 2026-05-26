@@ -13,25 +13,44 @@
       "/\\.yaml$/"
     ]
   },
+  "platformAutomerge": true,
   "packageRules": [
     {
-      "matchFileNames": [
-        "**/staging/**"
-      ],
-      "additionalBranchPrefix": "staging-",
-      "labels": [
-        "staging"
-      ]
+      "description": "Auto-merge patch and minor updates",
+      "matchUpdateTypes": ["patch", "minor"],
+      "automerge": true,
+      "automergeType": "pr"
     },
     {
-      "matchFileNames": [
-        "**/production/**",
-        "**/base/**"
-      ],
+      "description": "Major updates always require manual review",
+      "matchUpdateTypes": ["major"],
+      "automerge": false,
+      "labels": ["breaking-change"]
+    },
+    {
+      "description": "Cilium is the CNI — always review manually",
+      "matchPackageNames": ["cilium"],
+      "automerge": false,
+      "labels": ["manual-review", "cilium"]
+    },
+    {
+      "description": "Group all Flux controllers into one PR",
+      "matchPackagePatterns": ["^ghcr.io/fluxcd/"],
+      "groupName": "flux-controllers",
+      "automerge": true,
+      "automergeType": "pr"
+    },
+    {
+      "description": "Staging files",
+      "matchFileNames": ["**/staging/**"],
+      "additionalBranchPrefix": "staging-",
+      "labels": ["staging"]
+    },
+    {
+      "description": "Production and base files",
+      "matchFileNames": ["**/production/**", "**/base/**"],
       "additionalBranchPrefix": "prod-",
-      "labels": [
-        "production"
-      ]
+      "labels": ["production"]
     }
   ]
 }

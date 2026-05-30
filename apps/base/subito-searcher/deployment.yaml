@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: subito-searcher
+  labels:
+    app: subito-searcher
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: subito-searcher
+  template:
+    metadata:
+      labels:
+        app: subito-searcher
+    spec:
+      containers:
+        - name: subito-searcher
+          image: ghcr.io/xdaryamo/subito-searcher:v0.1.1
+          env:
+            - name: DELAY
+              value: "300"
+          envFrom:
+            - secretRef:
+                name: subito-searcher-telegram
+          volumeMounts:
+            - name: data
+              mountPath: /data
+            - name: queries
+              mountPath: /config
+              readOnly: true
+          resources:
+            requests:
+              cpu: 50m
+              memory: 128Mi
+            limits:
+              cpu: 200m
+              memory: 256Mi
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: subito-searcher-data
+        - name: queries
+          configMap:
+            name: subito-searcher-queries

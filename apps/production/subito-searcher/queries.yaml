@@ -1,0 +1,13 @@
+# Subito searches tracked by the bot. Edit and commit:
+# Kustomize hashes this file into the ConfigMap name, so any change here
+# triggers a pod rollout via Flux — no manual rollout-restart needed.
+# Filters (price, year, region) belong in the URL; build them on subito.it.
+queries:
+  - name: aprilia-rs660-camp
+    url: https://www.subito.it/annunci-campania/vendita/moto-e-scooter/?q=aprilia+rs+660&pe=9000&ys=2023
+  - name: triumph-street-triple-765rs-camp
+    url: https://www.subito.it/annunci-campania/vendita/moto-e-scooter/?q=triumph+street+triple+765+rs&pe=9000&ys=2023
+  - name: kawasaki-ninja-zx4rr-camp
+    url: https://www.subito.it/annunci-campania/vendita/moto-e-scooter/?q=kawasaki+ninja+zx4rr&pe=7000
+  - name: honda-cbr650-camp
+    url: https://www.subito.it/annunci-campania/vendita/moto-e-scooter/?q=cbr+650&pe=8000&ys=2024

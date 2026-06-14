@@ -1,7 +1,7 @@
 [tools]
 uv = "latest"
 pipx = "latest"
-ansible = "2.11.0"
+ansible = "14.0.0"
 kubectl = "latest"
 helm = "latest"
 k9s = "latest"

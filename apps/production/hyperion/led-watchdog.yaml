@@ -27,7 +27,7 @@ spec:
           restartPolicy: Never
           containers:
             - name: watchdog
-              image: curlimages/curl:8.11.1
+              image: curlimages/curl:8.20.0
               command:
                 - /bin/sh
                 - -c

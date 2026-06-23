@@ -1,0 +1,67 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: hyperion-led-watchdog
+  namespace: hyperion
+  labels:
+    app: hyperion
+spec:
+  # Ogni 5 minuti verifica che il LED device sia attivo su entrambe le istanze.
+  # Se Hyperion ha disabilitato il device (es. autoStart fallito perche' il
+  # controller WLED non era raggiungibile all'avvio del pod), lo ri-abilita,
+  # cosi' Hyperion riprende il controllo e spegne la striscia a fine streaming.
+  schedule: "*/5 * * * *"
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      backoffLimit: 1
+      activeDeadlineSeconds: 60
+      template:
+        metadata:
+          labels:
+            app: hyperion
+            component: led-watchdog
+        spec:
+          restartPolicy: Never
+          containers:
+            - name: watchdog
+              image: curlimages/curl:8.11.1
+              command:
+                - /bin/sh
+                - -c
+                - |
+                  set -u
+                  for inst in hyperion-sx hyperion-dx; do
+                    url="http://${inst}.hyperion:8090/json-rpc"
+                    state=$(curl -fsS -m 10 -X POST "$url" \
+                      -H 'Content-Type: application/json' \
+                      -d '{"command":"serverinfo"}' 2>/dev/null | tr -d ' \n\t\r')
+                    if [ -z "$state" ]; then
+                      echo "WARN: $inst non raggiungibile, salto"
+                      continue
+                    fi
+                    if echo "$state" | grep -q '"enabled":false,"name":"LEDDEVICE"'; then
+                      echo "$inst: LEDDEVICE disabilitato -> ri-abilito"
+                      curl -fsS -m 10 -X POST "$url" \
+                        -H 'Content-Type: application/json' \
+                        -d '{"command":"componentstate","componentstate":{"component":"LEDDEVICE","state":true}}' \
+                        && echo "$inst: LEDDEVICE ri-abilitato"
+                    else
+                      echo "$inst: LEDDEVICE gia' attivo, nessuna azione"
+                    fi
+                  done
+              resources:
+                requests:
+                  cpu: 10m
+                  memory: 16Mi
+                limits:
+                  memory: 32Mi
+              securityContext:
+                allowPrivilegeEscalation: false
+                runAsNonRoot: true
+                runAsUser: 65534
+                capabilities:
+                  drop:
+                    - ALL

@@ -5,3 +5,20 @@ resources:
 nameSuffix: -sx
 commonLabels:
   instance: sx
+patches:
+  - target:
+      kind: Deployment
+      name: hyperion
+    patch: |
+      apiVersion: apps/v1
+      kind: Deployment
+      metadata:
+        name: hyperion
+      spec:
+        template:
+          spec:
+            containers:
+              - name: led-watchdog
+                env:
+                  - name: WLED_HOST
+                    value: "192.168.1.96"

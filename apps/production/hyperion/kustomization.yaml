@@ -4,6 +4,5 @@ namespace: hyperion
 resources:
   - namespace.yaml
   - ingress.yaml
-  - led-watchdog.yaml
   - sx/
   - dx/

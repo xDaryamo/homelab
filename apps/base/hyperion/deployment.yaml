@@ -45,6 +45,71 @@ spec:
           initialDelaySeconds: 60
           periodSeconds: 30
           failureThreshold: 6
+      # Watchdog sidecar: runs INSIDE the same pod, so it talks to Hyperion over
+      # localhost (a "local" connection -> no API auth required, unlike an
+      # external CronJob which gets "No Authorization").
+      # Every 20s:
+      #   1) if Hyperion has auto-disabled the LEDDEVICE (e.g. the WLED was
+      #      momentarily unreachable when streaming stopped), re-enable it;
+      #   2) if there is no active source (empty priorities, PC powered off),
+      #      force the WLED off via its own API: this covers the case where the
+      #      device was disabled leaving the strip frozen on the last frame in
+      #      realtime mode.
+      - name: led-watchdog
+        image: curlimages/curl:8.21.0
+        env:
+        - name: WLED_HOST
+          value: ""
+        command:
+        - /bin/sh
+        - -c
+        - |
+          set -u
+          prev=""
+          while true; do
+            info=$(curl -fsS -m 8 -X POST http://localhost:8090/json-rpc \
+              -H 'Content-Type: application/json' \
+              -d '{"command":"serverinfo"}' 2>/dev/null | tr -d ' \n\t\r')
+            if [ -n "$info" ]; then
+              case "$info" in
+                *'"enabled":false,"name":"LEDDEVICE"'*)
+                  curl -fsS -m 8 -X POST http://localhost:8090/json-rpc \
+                    -H 'Content-Type: application/json' \
+                    -d '{"command":"componentstate","componentstate":{"component":"LEDDEVICE","state":true}}' \
+                    >/dev/null 2>&1 \
+                    && echo "$(date -u +%FT%TZ) LEDDEVICE was disabled -> re-enabled"
+                  ;;
+              esac
+              case "$info" in
+                *'"priorities":[]'*)
+                  if [ -n "$WLED_HOST" ]; then
+                    curl -fsS -m 8 -X POST "http://$WLED_HOST/json/state" \
+                      -H 'Content-Type: application/json' -d '{"on":false}' \
+                      >/dev/null 2>&1
+                  fi
+                  [ "$prev" != idle ] && echo "$(date -u +%FT%TZ) no active source -> WLED $WLED_HOST turned off"
+                  prev=idle
+                  ;;
+                *)
+                  prev=active
+                  ;;
+              esac
+            fi
+            sleep 20
+          done
+        resources:
+          requests:
+            cpu: 10m
+            memory: 16Mi
+          limits:
+            memory: 32Mi
+        securityContext:
+          allowPrivilegeEscalation: false
+          runAsNonRoot: true
+          runAsUser: 65534
+          capabilities:
+            drop:
+              - ALL
       volumes:
       - name: config-volume
         persistentVolumeClaim:

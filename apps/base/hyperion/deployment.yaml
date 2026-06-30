@@ -52,9 +52,11 @@ spec:
       #   1) if Hyperion has auto-disabled the LEDDEVICE (e.g. the WLED was
       #      momentarily unreachable when streaming stopped), re-enable it;
       #   2) if there is no active source (empty priorities, PC powered off),
-      #      force the WLED off via its own API: this covers the case where the
-      #      device was disabled leaving the strip frozen on the last frame in
-      #      realtime mode.
+      #      force the WLED off via its own API AND set lor:1 (live override
+      #      "until reboot"): with lor:0 a lingering realtime/live stream keeps
+      #      priority over on/off and freezes the strip on the last frame, so
+      #      {"on":false} alone is not enough. When a source becomes active
+      #      again we release the override (lor:0) so the live stream shows.
       - name: led-watchdog
         image: curlimages/curl:8.21.0
         env:
@@ -83,14 +85,24 @@ spec:
               case "$info" in
                 *'"priorities":[]'*)
                   if [ -n "$WLED_HOST" ]; then
+                    # lor:1 makes WLED ignore any lingering live stream so
+                    # on:false actually blanks the strip.
                     curl -fsS -m 8 -X POST "http://$WLED_HOST/json/state" \
-                      -H 'Content-Type: application/json' -d '{"on":false}' \
+                      -H 'Content-Type: application/json' -d '{"on":false,"lor":1}' \
                       >/dev/null 2>&1
                   fi
                   [ "$prev" != idle ] && echo "$(date -u +%FT%TZ) no active source -> WLED $WLED_HOST turned off"
                   prev=idle
                   ;;
                 *)
+                  # Source active again: release the override so Hyperion's
+                  # realtime stream is shown again (only on idle->active edge).
+                  if [ "$prev" != active ] && [ -n "$WLED_HOST" ]; then
+                    curl -fsS -m 8 -X POST "http://$WLED_HOST/json/state" \
+                      -H 'Content-Type: application/json' -d '{"on":true,"lor":0}' \
+                      >/dev/null 2>&1 \
+                      && echo "$(date -u +%FT%TZ) active source -> WLED $WLED_HOST live override released"
+                  fi
                   prev=active
                   ;;
               esac

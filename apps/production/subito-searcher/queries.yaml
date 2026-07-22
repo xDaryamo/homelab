@@ -6,8 +6,12 @@ queries:
   - name: aprilia-rs660-camp
     url: https://www.subito.it/annunci-campania/vendita/moto-e-scooter/?q=aprilia+rs+660&pe=9000&ys=2023
   - name: triumph-street-triple-765rs-camp
-    url: https://www.subito.it/annunci-campania/vendita/moto-e-scooter/?q=triumph+street+triple+765+rs&pe=9000&ys=2023
+    url: https://www.subito.it/annunci-campania/vendita/moto-e-scooter/?q=triumph+street+triple+765+rs&pe=11000&ys=2025
   - name: kawasaki-ninja-zx4rr-camp
     url: https://www.subito.it/annunci-campania/vendita/moto-e-scooter/?q=kawasaki+ninja+zx4rr&pe=7000
   - name: honda-cbr650-camp
     url: https://www.subito.it/annunci-campania/vendita/moto-e-scooter/?q=cbr+650&pe=8000&ys=2024
+  - name: kawasaki-ninja-500-camp
+    url: https://www.subito.it/annunci-campania/vendita/moto-e-scooter/?q=ninja+500&pe=5000
+  - name: aprilia-rs457-camp
+    url: https://www.subito.it/annunci-campania/vendita/moto-e-scooter/?q=aprilia+rs+457&pe=5000

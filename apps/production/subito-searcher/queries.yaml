@@ -15,3 +15,5 @@ queries:
     url: https://www.subito.it/annunci-campania/vendita/moto-e-scooter/?q=ninja+500&pe=5000
   - name: aprilia-rs457-camp
     url: https://www.subito.it/annunci-campania/vendita/moto-e-scooter/?q=aprilia+rs+457&pe=5000
+  - name: honda-rebel-500-camp
+    url: https://www.subito.it/annunci-campania/vendita/moto-e-scooter/?q=honda+rebel+500&pe=5500&ys=2023

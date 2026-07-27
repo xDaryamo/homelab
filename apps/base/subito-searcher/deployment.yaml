@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
         - name: subito-searcher
-          image: ghcr.io/xdaryamo/subito-searcher:v0.1.4
+          image: ghcr.io/xdaryamo/subito-searcher:v0.1.5
           env:
             - name: DELAY
               value: "300"

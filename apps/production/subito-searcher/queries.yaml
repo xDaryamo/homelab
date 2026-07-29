@@ -19,3 +19,5 @@ queries:
     url: https://www.subito.it/annunci-campania/vendita/moto-e-scooter/?q=honda+rebel+500&pe=5500&ys=2023
   - name: kawasaki-vulcan-s-camp
     url: https://www.subito.it/annunci-campania/vendita/moto-e-scooter/?q=vulcan+s&pe=7000&ys=2023
+  - name: aprilia-tuono-457-camp
+    url: https://www.subito.it/annunci-campania/vendita/moto-e-scooter/?q=aprilia+tuono+457&pe=5000&ys=2025

@@ -58,7 +58,7 @@ spec:
       #      {"on":false} alone is not enough. When a source becomes active
       #      again we release the override (lor:0) so the live stream shows.
       - name: led-watchdog
-        image: curlimages/curl:8.21.0
+        image: curlimages/curl:8.22.0
         env:
         - name: WLED_HOST
           value: ""

@@ -1,0 +1,118 @@
+# api + web in ONE pod on purpose. web/nginx.conf.template hardcodes `resolver 127.0.0.11`
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: opengym
+  labels:
+    app: opengym
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: opengym
+  template:
+    metadata:
+      labels:
+        app: opengym
+    spec:
+      initContainers:
+        - name: media
+          image: alpine/git:2.54.0
+          command: ["/bin/sh", "-c"]
+          args:
+            - |
+              set -e
+              if [ -n "$(ls -A /out/img 2>/dev/null)" ]; then
+                echo "media already present, skipping"; exit 0
+              fi
+              git clone --depth 1 https://github.com/hasaneyldrm/exercises-dataset /tmp/ds
+              cp /tmp/ds/images/*.jpg /out/img/
+              cp /tmp/ds/videos/*.gif /out/gif/
+              rm -rf /tmp/ds
+              echo "media ready ($(ls /out/img | wc -l) images)"
+          volumeMounts:
+            - name: media
+              mountPath: /out/img
+              subPath: img
+            - name: media
+              mountPath: /out/gif
+              subPath: gif
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              memory: 512Mi
+      containers:
+        - name: api
+          image: registry.gitlab.com/duartesantos8/opengym/api:v1.3.5
+          env:
+            - name: PORT
+              value: "3000"
+            - name: DATA_DIR
+              value: /data
+            - name: RP_NAME
+              value: openGym
+            # RP_ID / ORIGIN are set per-overlay: they must match the Ingress host exactly.
+          ports:
+            - name: api
+              containerPort: 3000
+          livenessProbe:
+            httpGet:
+              path: /api/health
+              port: 3000
+            initialDelaySeconds: 10
+            periodSeconds: 30
+          volumeMounts:
+            - name: data
+              mountPath: /data
+          resources:
+            requests:
+              cpu: 50m
+              memory: 128Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi
+        - name: web
+          image: registry.gitlab.com/duartesantos8/opengym/web:v1.3.5
+          env:
+            - name: NGINX_PORT
+              value: "80"
+            - name: BACKEND
+              value: "127.0.0.1"
+            - name: PORT
+              value: "3000"
+          ports:
+            - name: http
+              containerPort: 80
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 80
+            initialDelaySeconds: 5
+            periodSeconds: 20
+          volumeMounts:
+            - name: media
+              mountPath: /usr/share/nginx/html/img
+              subPath: img
+              readOnly: true
+            - name: media
+              mountPath: /usr/share/nginx/html/gif
+              subPath: gif
+              readOnly: true
+          resources:
+            requests:
+              cpu: 20m
+              memory: 32Mi
+            limits:
+              cpu: 200m
+              memory: 128Mi
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: opengym-data
+        - name: media
+          persistentVolumeClaim:
+            claimName: opengym-media

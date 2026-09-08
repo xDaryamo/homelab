@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: opengym
+spec:
+  template:
+    spec:
+      containers:
+        - name: api
+          env:
+            - name: RP_ID
+              value: gym.dariomazza.net
+            - name: ORIGIN
+              value: https://gym.dariomazza.net
+            - name: SESSION_DAYS
+              value: "90"
+            - name: ALLOW_GUEST
+              value: "0"
+ 

@@ -1,0 +1,29 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: opengym
+  namespace: opengym
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+    external-dns.alpha.kubernetes.io/cloudflare-proxied: "true"
+    external-dns.alpha.kubernetes.io/target: "e859d444-74bb-4e45-8426-1e6141995ed9.cfargotunnel.com"
+    # Exercise media and the JSON export/import are the only large payloads here.
+    nginx.ingress.kubernetes.io/proxy-body-size: "16m"
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts:
+        - gym.dariomazza.net
+      secretName: opengym-tls
+  rules:
+    - host: gym.dariomazza.net
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: opengym
+                port:
+                  number: 80

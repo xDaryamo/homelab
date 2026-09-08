@@ -6,3 +6,4 @@ resources:
   - glance
   - hyperion
   - subito-searcher
+  - opengym

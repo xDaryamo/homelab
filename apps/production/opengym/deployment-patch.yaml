@@ -16,4 +16,9 @@ spec:
               value: "90"
             - name: ALLOW_GUEST
               value: "0"
+            # Registration is closed. There is no first-user exception: with this on, signup is
+            # refused for everyone, and invites can only be minted by an admin, which needs
+            # ADMIN_UIDS. Enabled only after the first profile existed.
+            - name: INVITE_ONLY
+              value: "1"
  

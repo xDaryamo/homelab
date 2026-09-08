@@ -54,6 +54,22 @@ spec:
               value: "-Xmx1G"
             - name: SERVER_PORT
               value: "2333"
+            # ponytail: youtube-source config overridden here instead of in the
+            # Azure KV `lavalink-config` secret. OAuth off (stale refresh token
+            # made ANDROID_VR return "requires login"); client list reset to the
+            # upstream-recommended set. If YouTube starts returning "Sign in to
+            # confirm you're not a bot" again, add PLUGINS_YOUTUBE_POT_TOKEN /
+            # PLUGINS_YOUTUBE_POT_VISITORDATA in the KV secret.
+            - name: PLUGINS_YOUTUBE_OAUTH_ENABLED
+              value: "false"
+            - name: PLUGINS_YOUTUBE_CLIENTS_0
+              value: "MUSIC"
+            - name: PLUGINS_YOUTUBE_CLIENTS_1
+              value: "ANDROID_VR"
+            - name: PLUGINS_YOUTUBE_CLIENTS_2
+              value: "WEB"
+            - name: PLUGINS_YOUTUBE_CLIENTS_3
+              value: "WEBEMBEDDED"
           ports:
             - containerPort: 2333
               name: http

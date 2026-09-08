@@ -11,6 +11,11 @@ jobs:
       - uses: actions/checkout@v4
 
       - uses: jdx/mise-action@v2
+        with:
+          # Unpinned, mise-action installs whatever https://mise.jdx.dev/VERSION returns.
+          # That endpoint can point at a release whose assets are not published yet, and
+          # the download 404s on every open PR at once until upstream catches up.
+          version: 2026.9.2
 
       - name: kustomize build
         run: |

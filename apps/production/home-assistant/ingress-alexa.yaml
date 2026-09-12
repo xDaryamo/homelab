@@ -1,0 +1,41 @@
+# Public (Cloudflare tunnel) entrypoint for the Alexa skill only: account
+# linking (/auth + login page assets) and the Lambda smart home API.
+# Full UI stays LAN-only on ha.dariomazza.net.
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: home-assistant-alexa
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+    external-dns.alpha.kubernetes.io/cloudflare-proxied: "true"
+    external-dns.alpha.kubernetes.io/target: "e859d444-74bb-4e45-8426-1e6141995ed9.cfargotunnel.com"
+spec:
+  ingressClassName: nginx
+  tls:
+  - hosts:
+    - ha-alexa.dariomazza.net
+    secretName: home-assistant-alexa-tls
+  rules:
+  - host: ha-alexa.dariomazza.net
+    http:
+      paths:
+      - path: /api/alexa/smart_home
+        pathType: Exact
+        backend: &ha
+          service:
+            name: home-assistant
+            port:
+              number: 8123
+      - path: /auth
+        pathType: Prefix
+        backend: *ha
+      - path: /frontend_latest
+        pathType: Prefix
+        backend: *ha
+      - path: /static
+        pathType: Prefix
+        backend: *ha
+      - path: /manifest.json
+        pathType: Exact
+        backend: *ha

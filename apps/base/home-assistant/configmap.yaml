@@ -9,6 +9,15 @@ data:
     # http (trusted_proxies: 10.42.0.0/16 + node IPs) is imported and now
     # lives in the UI: Settings > System > Network (stored on the PVC).
 
+    # Custom Alexa Smart Home skill (Lambda eu-west-1 -> /api/alexa/smart_home).
+    alexa:
+      smart_home:
+        locale: it-IT
+        filter:
+          include_entities:
+            - light.yeelight_color_0x7c7f48f
+            - light.yeelight_ceiling1_0x7c5053d
+
     # Fake Philips Hue bridge for Alexa ("Alexa, discover devices").
     # Echo requires port 80; advertise the fixed Cilium LB IP so a pod
     # reschedule to another node doesn't break the cached bridge address.

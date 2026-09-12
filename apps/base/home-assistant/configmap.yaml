@@ -6,13 +6,8 @@ data:
   configuration.yaml: |
     default_config:
 
-    http:
-      use_x_forwarded_for: true
-      trusted_proxies:
-        - 10.42.0.0/16    # pod CIDR (ingress-nginx)
-        - 192.168.1.24
-        - 192.168.1.25
-        - 192.168.1.26
+    # http (trusted_proxies: 10.42.0.0/16 + node IPs) is imported and now
+    # lives in the UI: Settings > System > Network (stored on the PVC).
 
     # Fake Philips Hue bridge for Alexa ("Alexa, discover devices").
     # Echo requires port 80; advertise the fixed Cilium LB IP so a pod

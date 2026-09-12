@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: home-assistant
+  name: home-assistant
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: home-assistant
+  template:
+    metadata:
+      labels:
+        app: home-assistant
+    spec:
+      # hostNetwork: emulated_hue must receive the Echo's SSDP multicast
+      # discovery, which does not cross the Cilium overlay. No nodeSelector:
+      # Alexa caches advertise_ip (the fixed LB IP), not the node IP.
+      hostNetwork: true
+      dnsPolicy: ClusterFirstWithHostNet
+      containers:
+      - name: home-assistant
+        image: ghcr.io/home-assistant/home-assistant:2026.9.2
+        ports:
+        - containerPort: 8123
+          name: web-ui
+        - containerPort: 80
+          name: hue
+        volumeMounts:
+        - name: config-volume
+          mountPath: /config
+        - name: configuration
+          mountPath: /config/configuration.yaml
+          subPath: configuration.yaml
+        readinessProbe:
+          tcpSocket:
+            port: 8123
+          initialDelaySeconds: 20
+          periodSeconds: 30
+        livenessProbe:
+          tcpSocket:
+            port: 8123
+          initialDelaySeconds: 120
+          periodSeconds: 30
+          failureThreshold: 6
+      volumes:
+      - name: config-volume
+        persistentVolumeClaim:
+          claimName: home-assistant-pvc
+      - name: configuration
+        configMap:
+          name: home-assistant-config

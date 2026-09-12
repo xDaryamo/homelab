@@ -1,0 +1,25 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: home-assistant-config
+data:
+  configuration.yaml: |
+    default_config:
+
+    http:
+      use_x_forwarded_for: true
+      trusted_proxies:
+        - 10.42.0.0/16    # pod CIDR (ingress-nginx)
+        - 192.168.1.24
+        - 192.168.1.25
+        - 192.168.1.26
+
+    # Fake Philips Hue bridge for Alexa ("Alexa, discover devices").
+    # Echo requires port 80; advertise the fixed Cilium LB IP so a pod
+    # reschedule to another node doesn't break the cached bridge address.
+    emulated_hue:
+      listen_port: 80
+      advertise_ip: 192.168.1.205
+      advertise_port: 80
+      exposed_domains:
+        - light

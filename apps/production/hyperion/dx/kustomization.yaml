@@ -21,4 +21,4 @@ patches:
               - name: led-watchdog
                 env:
                   - name: WLED_HOST
-                    value: "192.168.1.97"
+                    value: "192.168.1.128"

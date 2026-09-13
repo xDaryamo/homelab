@@ -89,8 +89,11 @@
     - role: xanmanning.k3s
 
   post_tasks:
+    # Bootstrap only (fresh cluster, before Flux): Flux owns Cilium afterwards
+    # (infrastructure/controllers/cilium). Re-running this downgrades Cilium and
+    # resets ipam/mtu. Run with: -e bootstrap_cilium=true
     - name: Install Cilium
-      when: k3s_control_node
+      when: k3s_control_node and (bootstrap_cilium | default(false) | bool)
       shell: |
         curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
         

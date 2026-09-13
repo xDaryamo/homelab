@@ -13,8 +13,28 @@
       "/\\.yaml$/"
     ]
   },
+  "customManagers": [
+    {
+      "customType": "regex",
+      "description": "Lavalink plugins in application.yml",
+      "managerFilePatterns": ["/lavalink-application\\.yml$/"],
+      "matchStrings": [
+        "dependency: \"(?<depName>[^:\"]+:[^:\"]+):(?<currentValue>[^\"]+)\"\\s*\\n\\s*snapshot: (true|false)"
+      ],
+      "datasourceTemplate": "maven",
+      "registryUrlTemplate": "https://maven.lavalink.dev/releases",
+      "autoReplaceStringTemplate": "dependency: \"{{{depName}}}:{{{newValue}}}\"\n      snapshot: false"
+    }
+  ],
   "platformAutomerge": true,
   "packageRules": [
+    {
+      "description": "youtube-plugin breaks often: skip 1.18.2 and older, always review manually",
+      "matchPackageNames": ["dev.lavalink.youtube:youtube-plugin"],
+      "allowedVersions": "(1.18.2,)",
+      "automerge": false,
+      "labels": ["manual-review"]
+    },
     {
       "description": "Auto-merge patch and minor updates",
       "matchUpdateTypes": ["patch", "minor"],

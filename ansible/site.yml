@@ -77,7 +77,13 @@
       node-taint: []
       
 
-    k3s_agent: {}
+    # Applied to all nodes (the role merges k3s_agent into k3s_server).
+    k3s_agent:
+      # Image GC before Longhorn's 25% minimal-available disk threshold
+      # (kubelet default 85/80 never triggers before Longhorn stops scheduling).
+      kubelet-arg:
+        - "image-gc-high-threshold=70"
+        - "image-gc-low-threshold=60"
 
   roles:
     - role: xanmanning.k3s

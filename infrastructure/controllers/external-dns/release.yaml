@@ -31,6 +31,11 @@ spec:
       - dariomazza.net
     
     txtOwnerId: "k8s-homelab"
+
+    # v0.22 changed the default prefix to external-dns.kubernetes.io/ (no
+    # fallback): keep the alpha annotations (target/cloudflare-proxied) working.
+    extraArgs:
+      - --annotation-prefix=external-dns.alpha.kubernetes.io/
     
     cloudflare:
       proxied: false

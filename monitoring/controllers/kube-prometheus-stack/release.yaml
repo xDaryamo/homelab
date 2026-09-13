@@ -71,6 +71,7 @@ spec:
     prometheus:
       prometheusSpec:
         retention: 7d
+        # blocks only: keep ~20Gi headroom for WAL/head and compaction
         retentionSize: 40GB
         storageSpec:
           volumeClaimTemplate:
@@ -79,4 +80,4 @@ spec:
               accessModes: ["ReadWriteOnce"]
               resources:
                 requests:
-                  storage: 50Gi
+                  storage: 60Gi

@@ -73,6 +73,8 @@ spec:
         retention: 7d
         # blocks only: keep ~20Gi headroom for WAL/head and compaction
         retentionSize: 40GB
+        # startup probe waits for WAL replay; default 15m is too short for a big WAL
+        maximumStartupDurationSeconds: 7200
         storageSpec:
           volumeClaimTemplate:
             spec:

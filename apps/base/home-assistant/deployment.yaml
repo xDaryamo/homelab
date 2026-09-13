@@ -16,9 +16,8 @@ spec:
       labels:
         app: home-assistant
     spec:
-      # hostNetwork: emulated_hue must receive the Echo's SSDP multicast
-      # discovery, which does not cross the Cilium overlay. No nodeSelector:
-      # Alexa caches advertise_ip (the fixed LB IP), not the node IP.
+      # hostNetwork: LAN device discovery (SSDP/mDNS multicast, e.g. Yeelight)
+      # does not cross the Cilium overlay.
       hostNetwork: true
       dnsPolicy: ClusterFirstWithHostNet
       containers:
@@ -27,8 +26,6 @@ spec:
         ports:
         - containerPort: 8123
           name: web-ui
-        - containerPort: 80
-          name: hue
         volumeMounts:
         - name: config-volume
           mountPath: /config

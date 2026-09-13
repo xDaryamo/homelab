@@ -17,13 +17,3 @@ data:
           include_entities:
             - light.yeelight_color_0x7c7f48f
             - light.yeelight_ceiling1_0x7c5053d
-
-    # Fake Philips Hue bridge for Alexa ("Alexa, discover devices").
-    # Echo requires port 80; advertise the fixed Cilium LB IP so a pod
-    # reschedule to another node doesn't break the cached bridge address.
-    emulated_hue:
-      listen_port: 80
-      advertise_ip: 192.168.1.205
-      advertise_port: 80
-      exposed_domains:
-        - light

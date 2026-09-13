@@ -70,16 +70,17 @@ spec:
 
     prometheus:
       prometheusSpec:
-        retention: 7d
-        # blocks only: keep ~20Gi headroom for WAL/head and compaction
-        retentionSize: 40GB
+        # experimental use: short history. retentionSize counts blocks only,
+        # keep ~40% headroom for WAL/head and compaction
+        retention: 3d
+        retentionSize: 12GB
         # startup probe waits for WAL replay; default 15m is too short for a big WAL
         maximumStartupDurationSeconds: 7200
         storageSpec:
           volumeClaimTemplate:
             spec:
-              storageClassName: "longhorn-ssd"
+              storageClassName: "longhorn-ssd-2r"
               accessModes: ["ReadWriteOnce"]
               resources:
                 requests:
-                  storage: 60Gi
+                  storage: 20Gi

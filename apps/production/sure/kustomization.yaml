@@ -1,0 +1,20 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: sure
+resources:
+  - ../../base/sure
+  - namespace.yaml
+  - sure-secret.yaml
+  - ingress.yaml
+configMapGenerator:
+  - name: sure-env
+    literals:
+      - SELF_HOSTED=true
+      - RAILS_ASSUME_SSL=true
+      - RAILS_FORCE_SSL=false
+      - APP_DOMAIN=finance.dariomazza.net
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - POSTGRES_USER=sure
+      - POSTGRES_DB=sure_production
+      - REDIS_URL=redis://redis:6379/1

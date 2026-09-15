@@ -36,6 +36,11 @@
       "labels": ["manual-review"]
     },
     {
+      "description": "renovate chart 46.288.0 ships a broken image (ERR_MODULE_NOT_FOUND common-tags)",
+      "matchPackageNames": ["renovate"],
+      "allowedVersions": "!/^46\\.288\\.0$/"
+    },
+    {
       "description": "Auto-merge patch and minor updates",
       "matchUpdateTypes": ["patch", "minor"],
       "automerge": true,

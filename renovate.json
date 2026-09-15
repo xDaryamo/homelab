@@ -24,6 +24,14 @@
       "datasourceTemplate": "maven",
       "registryUrlTemplate": "https://maven.lavalink.dev/releases",
       "autoReplaceStringTemplate": "dependency: \"{{{depName}}}:{{{newValue}}}\"\n      snapshot: false"
+    },
+    {
+      "customType": "regex",
+      "description": "Image tags annotated with a renovate comment",
+      "managerFilePatterns": ["/\\.yaml$/"],
+      "matchStrings": [
+        "# renovate: datasource=(?<datasource>\\S+) depName=(?<depName>\\S+)\\s*\\n\\s*tag: (?<currentValue>\\S+)"
+      ]
     }
   ],
   "platformAutomerge": true,
@@ -34,11 +42,6 @@
       "allowedVersions": "(1.18.2,)",
       "automerge": false,
       "labels": ["manual-review"]
-    },
-    {
-      "description": "renovate chart 46.288.0 ships a broken image (ERR_MODULE_NOT_FOUND common-tags)",
-      "matchPackageNames": ["renovate"],
-      "allowedVersions": "!/^46\\.288\\.0$/"
     },
     {
       "description": "Auto-merge patch and minor updates",

@@ -1,0 +1,65 @@
+---
+- name: Configure quiet hours
+  hosts: k3s_cluster
+  become: true
+  vars:
+    quiet_start: "01:00"
+    quiet_end: "08:00"
+    quiet_max_perf_pct: 50
+
+  tasks:
+    - name: Install quiet-hours script
+      copy:
+        dest: /usr/local/sbin/quiet-hours
+        mode: '0755'
+        content: |
+          #!/bin/sh
+          p=/sys/devices/system/cpu/intel_pstate
+          if [ "$1" = on ]; then
+            turbo=1; perf={{ quiet_max_perf_pct }}; epp=power
+          else
+            turbo=0; perf=100; epp=balance_performance
+          fi
+          echo $turbo > $p/no_turbo
+          echo $perf > $p/max_perf_pct
+          for f in /sys/devices/system/cpu/cpu*/cpufreq/energy_performance_preference; do
+            echo $epp > "$f"
+          done
+
+    - name: Create quiet-hours service
+      copy:
+        dest: /etc/systemd/system/quiet-hours@.service
+        mode: '0644'
+        content: |
+          [Unit]
+          Description=Quiet hours %i
+
+          [Service]
+          Type=oneshot
+          ExecStart=/usr/local/sbin/quiet-hours %i
+
+    - name: Create quiet-hours timers
+      copy:
+        dest: "/etc/systemd/system/quiet-hours-{{ item.name }}.timer"
+        mode: '0644'
+        content: |
+          [Unit]
+          Description=Quiet hours {{ item.name }}
+
+          [Timer]
+          OnCalendar=*-*-* {{ item.at }}:00
+          Unit=quiet-hours@{{ item.name }}.service
+
+          [Install]
+          WantedBy=timers.target
+      loop:
+        - { name: "on", at: "{{ quiet_start }}" }
+        - { name: "off", at: "{{ quiet_end }}" }
+
+    - name: Enable quiet-hours timers
+      systemd:
+        name: "quiet-hours-{{ item }}.timer"
+        state: started
+        enabled: true
+        daemon_reload: true
+      loop: ["on", "off"]

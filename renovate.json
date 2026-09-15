@@ -69,6 +69,11 @@
       "automergeType": "pr"
     },
     {
+      "description": "Keep opengym api and web on the same version",
+      "matchPackageNames": ["registry.gitlab.com/duartesantos8/opengym/**"],
+      "groupName": "opengym"
+    },
+    {
       "description": "Staging files",
       "matchFileNames": ["**/staging/**"],
       "additionalBranchPrefix": "staging-",

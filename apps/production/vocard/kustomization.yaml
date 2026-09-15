@@ -7,3 +7,7 @@ resources:
   - mongodb-secret.yaml
   - vocard-settings.yaml
   - lavalink-config.yaml
+configMapGenerator:
+  - name: lavalink-application
+    files:
+      - application.yml=lavalink-application.yml

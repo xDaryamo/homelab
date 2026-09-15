@@ -13,8 +13,36 @@
       "/\\.yaml$/"
     ]
   },
+  "customManagers": [
+    {
+      "customType": "regex",
+      "description": "Lavalink plugins in application.yml",
+      "managerFilePatterns": ["/lavalink-application\\.yml$/"],
+      "matchStrings": [
+        "dependency: \"(?<depName>[^:\"]+:[^:\"]+):(?<currentValue>[^\"]+)\"\\s*\\n\\s*snapshot: (true|false)"
+      ],
+      "datasourceTemplate": "maven",
+      "registryUrlTemplate": "https://maven.lavalink.dev/releases",
+      "autoReplaceStringTemplate": "dependency: \"{{{depName}}}:{{{newValue}}}\"\n      snapshot: false"
+    },
+    {
+      "customType": "regex",
+      "description": "Image tags annotated with a renovate comment",
+      "managerFilePatterns": ["/\\.yaml$/"],
+      "matchStrings": [
+        "# renovate: datasource=(?<datasource>\\S+) depName=(?<depName>\\S+)\\s*\\n\\s*tag: (?<currentValue>\\S+)"
+      ]
+    }
+  ],
   "platformAutomerge": true,
   "packageRules": [
+    {
+      "description": "youtube-plugin breaks often: skip 1.18.2 and older, always review manually",
+      "matchPackageNames": ["dev.lavalink.youtube:youtube-plugin"],
+      "allowedVersions": "(1.18.2,)",
+      "automerge": false,
+      "labels": ["manual-review"]
+    },
     {
       "description": "Auto-merge patch and minor updates",
       "matchUpdateTypes": ["patch", "minor"],
@@ -39,6 +67,11 @@
       "groupName": "flux-controllers",
       "automerge": true,
       "automergeType": "pr"
+    },
+    {
+      "description": "Keep opengym api and web on the same version",
+      "matchPackageNames": ["registry.gitlab.com/duartesantos8/opengym/**"],
+      "groupName": "opengym"
     },
     {
       "description": "Staging files",

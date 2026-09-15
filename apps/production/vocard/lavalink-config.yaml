@@ -11,7 +11,20 @@ spec:
   target:
     name: lavalink-config
     creationPolicy: Owner
+    template:
+      engineVersion: v2
+      templateFrom:
+        # ponytail: extracts only the secrets from the legacy full application.yml in Key Vault;
+        # non-secret config lives in lavalink-application.yml
+        - literal: |-
+            {{- $c := .config | fromYaml }}
+            LAVALINK_SERVER_PASSWORD: {{ $c.lavalink.server.password | toJson }}
+            PLUGINS_YOUTUBE_OAUTH_REFRESHTOKEN: {{ $c.plugins.youtube.oauth.refreshToken | toJson }}
+            PLUGINS_YOUTUBE_POT_TOKEN: {{ $c.plugins.youtube.pot.token | toJson }}
+            PLUGINS_YOUTUBE_POT_VISITORDATA: {{ $c.plugins.youtube.pot.visitorData | toJson }}
+            PLUGINS_LAVASRC_SPOTIFY_CLIENTID: {{ $c.plugins.lavasrc.spotify.clientId | toJson }}
+            PLUGINS_LAVASRC_SPOTIFY_CLIENTSECRET: {{ $c.plugins.lavasrc.spotify.clientSecret | toJson }}
   data:
-  - secretKey: application.yml
+  - secretKey: config
     remoteRef:
       key: lavalink-config

@@ -1,0 +1,77 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sure
+  labels:
+    app: sure
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: sure
+  template:
+    metadata:
+      labels:
+        app: sure
+    spec:
+      securityContext:
+        fsGroup: 1000
+      initContainers:
+        - name: init-wait-postgres
+          image: busybox:latest
+          command: ["sh", "-c", "until nc -z postgres 5432; do echo 'Waiting for Postgres...'; sleep 2; done"]
+      containers:
+        - name: web
+          image: ghcr.io/we-promise/sure:0.7.4
+          envFrom:
+            - configMapRef:
+                name: sure-env
+            - secretRef:
+                name: sure-secret
+          ports:
+            - containerPort: 3000
+              name: http
+          volumeMounts:
+            - name: storage
+              mountPath: /rails/storage
+          resources:
+            requests:
+              cpu: 100m
+              memory: 512Mi
+            limits:
+              memory: 1Gi
+          startupProbe:
+            httpGet:
+              path: /up
+              port: 3000
+            periodSeconds: 10
+            failureThreshold: 30
+          livenessProbe:
+            httpGet:
+              path: /up
+              port: 3000
+            periodSeconds: 30
+
+        - name: worker
+          image: ghcr.io/we-promise/sure:0.7.4
+          command: ["bundle", "exec", "sidekiq"]
+          envFrom:
+            - configMapRef:
+                name: sure-env
+            - secretRef:
+                name: sure-secret
+          volumeMounts:
+            - name: storage
+              mountPath: /rails/storage
+          resources:
+            requests:
+              cpu: 50m
+              memory: 384Mi
+            limits:
+              memory: 1Gi
+      volumes:
+        - name: storage
+          persistentVolumeClaim:
+            claimName: sure-storage

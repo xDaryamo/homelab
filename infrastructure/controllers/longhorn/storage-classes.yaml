@@ -14,6 +14,20 @@ parameters:
   staleReplicaTimeout: "2880"
   diskSelector: "ssd" 
 ---
+# Class for SSDs, 2 replicas: re-creatable data (e.g. Prometheus metrics)
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: longhorn-ssd-2r
+provisioner: driver.longhorn.io
+allowVolumeExpansion: true
+reclaimPolicy: Delete
+volumeBindingMode: Immediate
+parameters:
+  numberOfReplicas: "2"
+  staleReplicaTimeout: "2880"
+  diskSelector: "ssd"
+---
 # Class for HDD
 apiVersion: storage.k8s.io/v1
 kind: StorageClass

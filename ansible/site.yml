@@ -77,14 +77,23 @@
       node-taint: []
       
 
-    k3s_agent: {}
+    # Applied to all nodes (the role merges k3s_agent into k3s_server).
+    k3s_agent:
+      # Image GC before Longhorn's 25% minimal-available disk threshold
+      # (kubelet default 85/80 never triggers before Longhorn stops scheduling).
+      kubelet-arg:
+        - "image-gc-high-threshold=70"
+        - "image-gc-low-threshold=60"
 
   roles:
     - role: xanmanning.k3s
 
   post_tasks:
+    # Bootstrap only (fresh cluster, before Flux): Flux owns Cilium afterwards
+    # (infrastructure/controllers/cilium). Re-running this downgrades Cilium and
+    # resets ipam/mtu. Run with: -e bootstrap_cilium=true
     - name: Install Cilium
-      when: k3s_control_node
+      when: k3s_control_node and (bootstrap_cilium | default(false) | bool)
       shell: |
         curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
         

@@ -31,7 +31,7 @@ spec:
       - dariomazza.net
     
     txtOwnerId: "k8s-homelab"
-    
+
     cloudflare:
       proxied: false
       

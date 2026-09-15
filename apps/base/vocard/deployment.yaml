@@ -19,22 +19,19 @@ spec:
       initContainers:
         - name: init-config
           image: busybox:latest
-          command: ["sh", "-c", "cp /config-vocard/settings.json /app-vocard/settings.json && cp /config-lavalink/application.yml /app-lavalink/application.yml"]
+          command: ["sh", "-c", "cp /config-vocard/settings.json /app-vocard/settings.json"]
           volumeMounts:
             - name: settings-secret
               mountPath: /config-vocard
             - name: settings-volume
               mountPath: /app-vocard
-            - name: lavalink-config-secret
-              mountPath: /config-lavalink
-            - name: lavalink-config-volume
-              mountPath: /app-lavalink
         - name: init-wait-mongodb
           image: busybox:latest
           command: ["sh", "-c", "until nc -z mongodb 27017; do echo 'Waiting for MongoDB...'; sleep 2; done"]
       containers:
         - name: vocard
-          image: ghcr.io/chocomeow/vocard:beta
+          # no versioned beta tags upstream: digest pin, Renovate opens a PR when beta moves
+          image: ghcr.io/chocomeow/vocard:beta@sha256:9383528aecec9b775019b219d8f1d1e679ae781baa6e070c51317792b12256fd
           command: ["sh", "-c", "until python3 -c 'import socket; s = socket.socket(); s.connect((\"127.0.0.1\", 2333))' 2>/dev/null; do echo 'Waiting for Lavalink...'; sleep 1; done; python3 main.py"]
           volumeMounts:
             - name: settings-volume
@@ -54,11 +51,14 @@ spec:
               value: "-Xmx1G"
             - name: SERVER_PORT
               value: "2333"
+          envFrom:
+            - secretRef:
+                name: lavalink-config
           ports:
             - containerPort: 2333
               name: http
           volumeMounts:
-            - name: lavalink-config-volume
+            - name: lavalink-application
               mountPath: /opt/Lavalink/application.yml
               subPath: application.yml
           resources:
@@ -93,8 +93,6 @@ spec:
             secretName: vocard-settings
         - name: settings-volume
           emptyDir: {}
-        - name: lavalink-config-secret
-          secret:
-            secretName: lavalink-config
-        - name: lavalink-config-volume
-          emptyDir: {}
+        - name: lavalink-application
+          configMap:
+            name: lavalink-application

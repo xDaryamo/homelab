@@ -14,7 +14,7 @@ spec:
         kind: HelmRepository
         name: renovate
         namespace: renovate
-      version: 46.251.0
+      version: 46.300.4
 
   install:
     crds: CreateReplace
@@ -29,6 +29,9 @@ spec:
   interval: 1h0m0s
 
   values:
+    image:
+      # renovate: datasource=docker depName=ghcr.io/renovatebot/renovate
+      tag: 44.93.5
     cronjob:
       schedule: "@hourly"
     renovate:

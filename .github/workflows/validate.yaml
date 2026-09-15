@@ -16,6 +16,8 @@ jobs:
           # That endpoint can point at a release whose assets are not published yet, and
           # the download 404s on every open PR at once until upstream catches up.
           version: 2026.9.2
+          # Only kustomize is needed here; the full mise.toml pulls neovim, azure, terraform...
+          install_args: kustomize
 
       - name: kustomize build
         run: |

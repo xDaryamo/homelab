@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: redis
-          image: redis:8.2
+          image: redis:8.10
           args: ["--save", "", "--appendonly", "no"]
           ports:
             - containerPort: 6379

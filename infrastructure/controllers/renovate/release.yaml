@@ -31,7 +31,7 @@ spec:
   values:
     image:
       # renovate: datasource=docker depName=ghcr.io/renovatebot/renovate
-      tag: 44.111.1
+      tag: 44.111.2
     cronjob:
       schedule: "@hourly"
     renovate:

@@ -28,7 +28,7 @@ spec:
         upstreams = [ "file:///dev/null" ]
         provider = "azure"
         # Azure specific config
-        oidc_issuer_url = "https://login.microsoftonline.com/c30767db-3dda-4dd4-8a4d-097d22cb99d3/v2.0"
+        oidc_issuer_url = "https://login.microsoftonline.com/ee06108a-640d-4d9d-8957-1280347fb13c/v2.0"
         cookie_domains = [ ".dariomazza.net" ]
         whitelist_domains = [ ".dariomazza.net" ]
         cookie_secure = true

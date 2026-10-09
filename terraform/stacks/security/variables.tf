@@ -7,7 +7,7 @@ variable "location" {
 variable "key_vault_name" {
   description = "The globally unique name of the Key Vault"
   type        = string
-  default     = "kv-dariomazza-homelab" 
+  default     = "kv-dmazza-homelab" 
 }
 
 variable "grafana_url" {

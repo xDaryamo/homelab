@@ -15,6 +15,21 @@
         k3s_control_node: false
       when: "'workers' in group_names"
 
+    # Limits are per UID and shared by every pod on the node running as that
+    # UID (1000: media stack library watchers). Once watches run out,
+    # config-reloader sidecars fail with "no space left on device".
+    - name: Raise inotify limits
+      tags: sysctl
+      sysctl:
+        name: "{{ item.name }}"
+        value: "{{ item.value }}"
+        sysctl_file: /etc/sysctl.d/99-inotify.conf
+        state: present
+        reload: true
+      loop:
+        - { name: fs.inotify.max_user_instances, value: "8192" }
+        - { name: fs.inotify.max_user_watches, value: "1048576" }
+
     - name: Install Longhorn dependencies
       apt:
         name:

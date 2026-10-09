@@ -1,12 +1,12 @@
 [tools]
 uv = "latest"
 pipx = "latest"
-ansible = "14.4.0"
+ansible = "14.5.0"
 kubectl = "latest"
 helm = "latest"
 k9s = "latest"
 kustomize = "latest"
-flux2 = "2.9.5"
+flux2 = "2.9.6"
 
 age = "latest"
 yq = "latest"

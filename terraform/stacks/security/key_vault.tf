@@ -9,7 +9,8 @@ resource "azurerm_key_vault" "main" {
   soft_delete_retention_days  = 7
   purge_protection_enabled    = false
 
-  sku_name = "standard"
+  sku_name                   = "standard"
+  rbac_authorization_enabled = false
 
   # Admin Policy
   access_policy {

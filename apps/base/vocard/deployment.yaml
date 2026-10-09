@@ -31,7 +31,7 @@ spec:
       containers:
         - name: vocard
           # no versioned beta tags upstream: digest pin, Renovate opens a PR when beta moves
-          image: ghcr.io/chocomeow/vocard:beta@sha256:9383528aecec9b775019b219d8f1d1e679ae781baa6e070c51317792b12256fd
+          image: ghcr.io/chocomeow/vocard:beta@sha256:1f2454bad77648dca9163d7211aaaa293a2918f45a6ec23b3a2db4d6b3749857
           command: ["sh", "-c", "until python3 -c 'import socket; s = socket.socket(); s.connect((\"127.0.0.1\", 2333))' 2>/dev/null; do echo 'Waiting for Lavalink...'; sleep 1; done; python3 main.py"]
           volumeMounts:
             - name: settings-volume

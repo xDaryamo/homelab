@@ -14,7 +14,7 @@ spec:
         kind: HelmRepository
         name: renovate
         namespace: renovate
-      version: 46.357.7
+      version: 46.357.9
 
   install:
     crds: CreateReplace

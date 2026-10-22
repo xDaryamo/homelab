@@ -18,3 +18,10 @@ configMapGenerator:
       - POSTGRES_USER=sure
       - POSTGRES_DB=sure_production
       - REDIS_URL=redis://redis:6379/1
+      - OIDC_ISSUER=https://login.microsoftonline.com/ee06108a-640d-4d9d-8957-1280347fb13c/v2.0
+      - OIDC_REDIRECT_URI=https://finance.dariomazza.net/auth/openid_connect/callback
+      - OIDC_BUTTON_LABEL=Sign in with Microsoft
+      - AUTH_LOCAL_LOGIN_ENABLED=false
+      # ponytail: break-glass until SSO login is verified, then set to false
+      - AUTH_LOCAL_ADMIN_OVERRIDE_ENABLED=true
+      - AUTH_JIT_MODE=link_only

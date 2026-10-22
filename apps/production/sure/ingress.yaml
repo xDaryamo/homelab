@@ -4,8 +4,13 @@ metadata:
   name: sure
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt-prod
-    external-dns.kubernetes.io/cloudflare-proxied: "false"
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+    external-dns.kubernetes.io/cloudflare-proxied: "true"
+    external-dns.kubernetes.io/target: "e859d444-74bb-4e45-8426-1e6141995ed9.cfargotunnel.com"
     nginx.ingress.kubernetes.io/proxy-body-size: "20m"
+    # The web UI sits behind Azure SSO; only the MCP/OAuth paths below are public.
+    nginx.ingress.kubernetes.io/auth-url: "http://oauth2-proxy.oauth2-proxy.svc.cluster.local/oauth2/auth"
+    nginx.ingress.kubernetes.io/auth-signin: "https://auth.dariomazza.net/oauth2/start?rd=$scheme://$host$escaped_request_uri"
 spec:
   ingressClassName: nginx
   tls:
@@ -23,3 +28,36 @@ spec:
                 name: sure
                 port:
                   number: 3000
+---
+# Public paths for the Claude MCP connector (Sure's own OAuth/bearer auth applies).
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: sure-mcp
+  annotations:
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+    external-dns.kubernetes.io/cloudflare-proxied: "true"
+    external-dns.kubernetes.io/target: "e859d444-74bb-4e45-8426-1e6141995ed9.cfargotunnel.com"
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts:
+        - finance.dariomazza.net
+      secretName: sure-tls
+  rules:
+    - host: finance.dariomazza.net
+      http:
+        paths:
+          - path: /mcp
+            pathType: Prefix
+            backend: &sure
+              service:
+                name: sure
+                port:
+                  number: 3000
+          - path: /oauth
+            pathType: Prefix
+            backend: *sure
+          - path: /.well-known
+            pathType: Prefix
+            backend: *sure

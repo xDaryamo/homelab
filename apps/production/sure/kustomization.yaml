@@ -22,6 +22,5 @@ configMapGenerator:
       - OIDC_REDIRECT_URI=https://finance.dariomazza.net/auth/openid_connect/callback
       - OIDC_BUTTON_LABEL=Sign in with Microsoft
       - AUTH_LOCAL_LOGIN_ENABLED=false
-      # ponytail: break-glass until SSO login is verified, then set to false
-      - AUTH_LOCAL_ADMIN_OVERRIDE_ENABLED=true
+      - AUTH_LOCAL_ADMIN_OVERRIDE_ENABLED=false
       - AUTH_JIT_MODE=link_only

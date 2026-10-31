@@ -1,0 +1,12 @@
+# No critical-data label: holds tokens and browser sessions, stays out of the Azure backup.
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: hermes-data
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
+  storageClassName: longhorn-ssd

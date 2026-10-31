@@ -1,0 +1,9 @@
+approvals:
+  mode: manual
+  cron_mode: deny
+terminal:
+  backend: local
+dashboard:
+  public_url: https://hermes.dariomazza.net
+  trusted_proxies:
+    - 10.42.0.0/16

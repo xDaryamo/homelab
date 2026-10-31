@@ -74,6 +74,12 @@
       "groupName": "opengym"
     },
     {
+      "description": "Hermes Agent: wait 7 days, never automerge",
+      "matchPackageNames": ["nousresearch/hermes-agent"],
+      "minimumReleaseAge": "7 days",
+      "automerge": false
+    },
+    {
       "description": "Staging files",
       "matchFileNames": ["**/staging/**"],
       "additionalBranchPrefix": "staging-",

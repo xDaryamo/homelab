@@ -1,0 +1,83 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hermes
+  labels:
+    app: hermes
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: hermes
+  template:
+    metadata:
+      labels:
+        app: hermes
+    spec:
+      automountServiceAccountToken: false
+      securityContext:
+        seccompProfile:
+          type: RuntimeDefault
+      initContainers:
+        # Seeds once: Hermes rewrites its own config.
+        - name: seed-config
+          image: nousresearch/hermes-agent:v0.22.5
+          command:
+            - sh
+            - -c
+            - '[ -f /opt/data/config.yaml ] || cp /seed/config.yaml /opt/data/config.yaml'
+          securityContext:
+            allowPrivilegeEscalation: false
+          volumeMounts:
+            - name: data
+              mountPath: /opt/data
+            - name: seed
+              mountPath: /seed
+              readOnly: true
+      containers:
+        - name: hermes
+          image: nousresearch/hermes-agent:v0.22.5
+          args:
+            - gateway
+            - run
+          env:
+            - name: TZ
+              value: Europe/Rome
+            - name: HERMES_DASHBOARD
+              value: "1"
+          envFrom:
+            - secretRef:
+                name: hermes-dashboard
+          ports:
+            - containerPort: 9119
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - NET_RAW
+                - MKNOD
+          volumeMounts:
+            - name: data
+              mountPath: /opt/data
+            - name: dshm
+              mountPath: /dev/shm
+          resources:
+            requests:
+              cpu: 500m
+              memory: 2Gi
+            limits:
+              cpu: "2"
+              memory: 4Gi
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: hermes-data
+        - name: dshm
+          emptyDir:
+            medium: Memory
+            sizeLimit: 1Gi
+        - name: seed
+          configMap:
+            name: hermes-config

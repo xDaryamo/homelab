@@ -1,8 +1,10 @@
-# No critical-data label: holds tokens and browser sessions, stays out of the Azure backup.
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: hermes-data
+  labels:
+    recurring-job.longhorn.io/source: enabled
+    recurring-job-group.longhorn.io/critical-data: enabled
 spec:
   accessModes:
     - ReadWriteOnce

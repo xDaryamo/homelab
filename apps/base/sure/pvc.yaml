@@ -3,6 +3,7 @@ kind: PersistentVolumeClaim
 metadata:
   name: sure-storage
   labels:
+    recurring-job.longhorn.io/source: enabled
     recurring-job-group.longhorn.io/critical-data: enabled
 spec:
   accessModes:

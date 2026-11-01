@@ -51,6 +51,8 @@ spec:
           volumeMounts:
             - name: postgres-data
               mountPath: /var/lib/postgresql/data
+  # Immutable: recurring-job.longhorn.io/source=enabled is set by hand on the live PVC.
+  # On a rebuild, add it again or the volume is silently left out of the backup.
   volumeClaimTemplates:
     - metadata:
         name: postgres-data

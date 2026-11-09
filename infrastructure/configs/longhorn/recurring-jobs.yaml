@@ -4,7 +4,7 @@ metadata:
   name: nightly-azure-backup
   namespace: longhorn
 spec:
-  cron: "0 23 * * *"      # Runs every day at 23:00 (11 PM)
+  cron: "0 23 * * 0,3"    # Wed and Sun at 23:00: each run costs ~0.1 EUR in Azure list operations
   task: "backup"          # Action type: Backup to Azure Blob Storage
   groups:
   - critical-data         # Job group for volume assignment

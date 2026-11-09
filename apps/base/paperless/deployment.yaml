@@ -1,0 +1,84 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: paperless
+  labels:
+    app: paperless
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: paperless
+  template:
+    metadata:
+      labels:
+        app: paperless
+    spec:
+      automountServiceAccountToken: false
+      securityContext:
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: paperless
+          image: ghcr.io/paperless-ngx/paperless-ngx:3.4.2
+          env:
+            - name: PAPERLESS_URL
+              value: https://paperless.dariomazza.net
+            - name: PAPERLESS_REDIS
+              value: redis://localhost:6379
+            - name: PAPERLESS_TIME_ZONE
+              value: Europe/Rome
+            - name: PAPERLESS_OCR_LANGUAGE
+              value: ita+eng
+            - name: PAPERLESS_WEBSERVER_WORKERS
+              value: "1"
+            - name: PAPERLESS_TASK_WORKERS
+              value: "1"
+          envFrom:
+            - secretRef:
+                name: paperless
+          ports:
+            - containerPort: 8000
+          securityContext:
+            allowPrivilegeEscalation: false
+          startupProbe:
+            httpGet:
+              path: /
+              port: 8000
+            periodSeconds: 10
+            failureThreshold: 30
+          volumeMounts:
+            - name: data
+              mountPath: /usr/src/paperless/data
+              subPath: data
+            - name: data
+              mountPath: /usr/src/paperless/media
+              subPath: media
+            - name: consume
+              mountPath: /usr/src/paperless/consume
+          resources:
+            requests:
+              cpu: 250m
+              memory: 1Gi
+            limits:
+              memory: 2Gi
+              ephemeral-storage: 10Gi
+        - name: redis
+          image: redis:8.10
+          args: ["--save", "", "--appendonly", "no"]
+          securityContext:
+            allowPrivilegeEscalation: false
+          resources:
+            requests:
+              cpu: 20m
+              memory: 64Mi
+            limits:
+              memory: 256Mi
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: paperless-data
+        - name: consume
+          emptyDir: {}

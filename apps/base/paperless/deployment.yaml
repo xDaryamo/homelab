@@ -17,6 +17,8 @@ spec:
         app: paperless
     spec:
       automountServiceAccountToken: false
+      # Service named "paperless" would inject PAPERLESS_PORT=tcp://..., breaking the app
+      enableServiceLinks: false
       securityContext:
         seccompProfile:
           type: RuntimeDefault

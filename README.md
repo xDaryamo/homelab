@@ -1,189 +1,131 @@
-![Kubernetes](https://img.shields.io/badge/Kubernetes-326CE5?style=flat&logo=kubernetes&logoColor=fff) 
-![Azure](https://custom-icon-badges.demolab.com/badge/Microsoft%20Azure-0089D6?style=flat&logo=msazure&logoColor=white) 
-![Terraform](https://img.shields.io/badge/Terraform-844FBA?style=flat&logo=terraform&logoColor=fff) 
-![Ansible](https://img.shields.io/badge/Ansible-EE0000?style=flat&logo=ansible&logoColor=white) 
-![Debian](https://img.shields.io/badge/Debian-A81D33?style=flat&logo=debian&logoColor=fff) 
-![Cilium](https://img.shields.io/badge/Cilium-F8C200?style=flat&logo=cilium&logoColor=black) 
-![Cloudflare](https://img.shields.io/badge/Cloudflare-F38020?style=flat&logo=Cloudflare&logoColor=white) 
-![nginx](https://img.shields.io/badge/nginx-009639?style=flat&logo=nginx&logoColor=fff) 
-![Flux](https://img.shields.io/badge/Flux_CD-336791?style=flat&logo=flux&logoColor=white) 
-![Renovate](https://img.shields.io/badge/RenovateBot-1A1F6C?style=flat&logo=renovate&logoColor=fff)
-# 🤖 Homelab - GitOps driven Bare Metal Kubernetes
+# Homelab
 
-## Project Overview
+A three-node bare metal Kubernetes (K3s) cluster, managed entirely through Git with Flux. I run my portfolio site and a set of open source self-hosted apps on it, and use it to learn how to operate real infrastructure: networking, secrets, storage, backups, and what breaks.
 
-**A GitOps-driven, Bare Metal Kubernetes cluster.**
+I'm a computer science graduate looking for a cloud / platform role. This repo is the best description of how I work. My portfolio is at [dariomazza.net](https://dariomazza.net).
 
-This repository contains the Infrastructure as Code (IaC) and configuration for my personal homelab. It serves as a production-grade playground for exploring Cloud Native technologies, focusing on automation, security, and high availability.
+![Kubernetes](https://img.shields.io/badge/Kubernetes-326CE5?style=flat&logo=kubernetes&logoColor=fff)
+![Flux](https://img.shields.io/badge/Flux_CD-5468FF?style=flat&logo=flux&logoColor=white)
+![Terraform](https://img.shields.io/badge/Terraform-844FBA?style=flat&logo=terraform&logoColor=fff)
+![Ansible](https://img.shields.io/badge/Ansible-EE0000?style=flat&logo=ansible&logoColor=white)
+![Cilium](https://img.shields.io/badge/Cilium-F8C200?style=flat&logo=cilium&logoColor=black)
+![Azure](https://custom-icon-badges.demolab.com/badge/Microsoft%20Azure-0089D6?style=flat&logo=msazure&logoColor=white)
 
-## 📖 Introduction
+## At a glance
 
-The purpose of this homelab is twofold: continuous learning and full-stack responsibility.
+- 3 Dell Optiplex 7040 Micro (i5-6600T, 16 GB), Debian 13, K3s. No hypervisor.
+- Everything in the cluster is deployed by Flux from this repo, plus a second private repo for personal workloads.
+- Secrets live in Azure Key Vault and reach the cluster through External Secrets. No secret values in Git.
+- Dependency updates arrive as Renovate pull requests. A CI job builds every kustomization before merge.
+- Persistent volumes use Longhorn, with scheduled backups to Azure Blob Storage.
 
-As a recent Computer Science graduate passionate about Cloud Native technologies, this lab allows me to experiment with bleeding-edge tools and architectures (like eBPF with Cilium or GitOps with Flux) in a controlled environment to build deep technical expertise.
+## Architecture
 
-By self-hosting applications, I take ownership of the entire lifecycle—from hardware provisioning to application deployment, backup strategies, and observability.
+![Architecture](assets/architecture.svg)
 
-## 🏗️ Architecture & GitOps Flow
+The diagram is drawn with [Excalidraw](https://excalidraw.com/); the editable source is [assets/architecture.excalidraw](assets/architecture.excalidraw).
 
-I follow a strictly **Declarative** approach. If it's not in Git, it doesn't exist.
+- **Deploy:** Flux pulls both repos and reconciles the cluster. Terraform and Ansible are run by hand and are not part of the Flux loop.
+- **Secrets:** Terraform creates the Key Vault and the Entra apps. External Secrets copies the values into the cluster.
+- **Traffic:** public services go through a Cloudflare Tunnel. Admin tools are only reachable from the LAN or Tailscale, some behind OAuth2 Proxy with Entra ID.
 
-```mermaid
-graph TD
-    user[User/Developer] -->|Push Code| git[GitHub Repository]
-    user -->|Provision| tf[Terraform]
+## What runs on it
 
-    subgraph "Azure Cloud"
-        tf -->|Manage| kv[Azure Key Vault]
-        tf -->|Manage| st[Azure Blob Storage]
-        tf -->|Manage| ent[Microsoft Entra ID]
-    end
+### Platform
 
-    subgraph "Bare Metal Cluster"
-        flux[Flux CD] -->|Watch & Pull| git
-        flux -->|Reconcile| k3s[K3s Cluster]
-        renovate[Renovate Bot] -.->|Pull Requests| git
+| | App | What it does |
+| :---: | :--- | :--- |
+| <img src="https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/png/flux-cd.png" width="32" height="32"> | [Flux](https://fluxcd.io/) | GitOps: applies this repo to the cluster |
+| <img src="https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/png/cilium.png" width="32" height="32"> | [Cilium](https://cilium.io/) | Networking (eBPF) and L2 load balancing |
+| <img src="https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/png/nginx.png" width="32" height="32"> | [Ingress NGINX](https://kubernetes.github.io/ingress-nginx/) | HTTP routing for every service |
+| <img src="https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/png/cert-manager.png" width="32" height="32"> | [cert-manager](https://cert-manager.io/) | Let's Encrypt certificates |
+| <img src="https://cdn.simpleicons.org/kubernetes" width="32" height="32"> | [ExternalDNS](https://github.com/kubernetes-sigs/external-dns) | Creates DNS records on Cloudflare |
+| <img src="https://raw.githubusercontent.com/external-secrets/external-secrets/main/assets/eso-logo-large.png" width="32" height="32"> | [External Secrets](https://external-secrets.io/) | Syncs Azure Key Vault into Kubernetes secrets |
+| <img src="https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/png/longhorn.png" width="32" height="32"> | [Longhorn](https://longhorn.io/) | Replicated volumes and backups to Azure |
+| <img src="https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/png/oauth2-proxy.png" width="32" height="32"> | [OAuth2 Proxy](https://oauth2-proxy.github.io/oauth2-proxy/) | Entra ID login in front of admin tools |
+| <img src="https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/png/cloudflare.png" width="32" height="32"> | [cloudflared](https://www.cloudflare.com/products/zero-trust/) | Cloudflare Tunnel for public services |
+| <img src="https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/png/renovate.png" width="32" height="32"> | [Renovate](https://renovatebot.com/) | Dependency update pull requests |
 
-        subgraph "Observability"
-            prom[Prometheus]
-            graf[Grafana]
-        end
-        
-        subgraph "Protected Services"
-            app[Applications]
-            admin[Infrastructure UIs]
-        end
-        
-        eso[External Secrets] -.->|Fetch Secrets| kv
-        cilium[Cilium CNI] -.->|Pod Networking / eBPF| app
-        lh[Longhorn Storage] -->|Offsite Backup| st
-        oauth[OAuth2 Proxy] -.->|Authenticate| ent
+### Observability
 
-        k3s --> prom
-        prom --> graf
-    end
-    
-    client[External Client] -->|HTTPS| cf[Cloudflare Zero Trust]
-    cf -->|Tunnel| ingress[Ingress NGINX]
-    ingress -->|Auth Check| oauth
-    oauth -.->|Secure Access| app
-    oauth -.->|Secure Access| admin
-    ingress -->|Route| app
-    ingress -->|Route| admin
-    ingress -->|Route| graf
-```
+| | App | What it does |
+| :---: | :--- | :--- |
+| <img src="https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/png/prometheus.png" width="32" height="32"> | [Prometheus](https://prometheus.io/) | Metrics |
+| <img src="https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/png/grafana.png" width="32" height="32"> | [Grafana](https://grafana.com/) | Dashboards |
 
-*   **Provisioning:**
-    *   **Bare Metal:** I use **Ansible** to bootstrap the physical Debian nodes.
-    *   **Cloud Infrastructure:** I use **Terraform** to manage Azure resources (Key Vault, Identities, Storage) as code, ensuring a reproducible hybrid environment.
-*   **Orchestration:** **K3s** is my distribution of choice for its lightweight footprint.
-*   **GitOps:** **Flux** monitors this repository and automatically reconciles the cluster state.
+### Self-hosted apps
 
-### ⚖️ Design Decisions
+| | App | What it does |
+| :---: | :--- | :--- |
+| <img src="https://dariomazza.net/favicon.ico" width="32" height="32"> | [Portfolio](https://dariomazza.net) | My own site: portfolio and resume, with a staging copy |
+| <img src="https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/png/sure.png" width="32" height="32"> | [Sure](https://github.com/we-promise/sure) | Personal finance |
+| <img src="https://cdn.jsdelivr.net/gh/selfhst/icons/png/opengym.png" width="32" height="32"> | [OpenGym](https://gitlab.com/duartesantos8/opengym) | Workout logbook |
+| <img src="https://cdn.jsdelivr.net/gh/selfhst/icons/png/vocard.png" width="32" height="32"> | [Vocard](https://github.com/ChocoMeow/Vocard-Dashboard) | Discord music bot, with Lavalink and MongoDB |
+| <img src="https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/png/telegram.png" width="32" height="32"> | [subito-it-searcher](https://github.com/xDaryamo/subito-it-searcher) | My fork, customized for my needs: Telegram bot that alerts me about new marketplace listings |
 
-*   **Public vs. Private Architecture:** I utilize a multi-source GitOps strategy. This public repository manages the infrastructure and open-source stack, while a linked **Private Repository** handles sensitive workloads and personal data. Flux seamlessly reconciles both streams, allowing me to share my work publicly while keeping private data secure.
-*   **Access Strategy:** I prioritize security and simplicity for service access:
-    *   **Internal Access:** Services are accessible directly within the local network or remotely via **Tailscale**, which provides a secure Mesh VPN layer.
-    *   **Public Access:** Specific services are exposed via **Cloudflare Zero Trust** or protected by **OAuth2 Proxy** integrated with **Microsoft Entra ID**, ensuring that only authorized users can reach sensitive endpoints.
-*   **Backup & Disaster Recovery:** I implement a 3-2-1 backup strategy. **Longhorn** manages local volume replication, while critical data is periodically backed up to **Azure Blob Storage** to ensure recovery in case of hardware failure.
-*   **Bare Metal vs. Virtualization:** To maximize the performance of my hardware, I opted for a **Bare Metal** installation instead of using a virtualization layer like Proxmox. This avoids the overhead of an hypervisor, which is critical given the resources of my mini PCs, and ensures that the cluster remains performant for both experimentation and private services.
+### Home
 
-## 📂 Repository Structure
+| | App | What it does |
+| :---: | :--- | :--- |
+| <img src="https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/png/home-assistant.png" width="32" height="32"> | [Home Assistant](https://www.home-assistant.io/) | Home automation |
+| <img src="https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/png/hyperion.png" width="32" height="32"> | [Hyperion](https://hyperion-project.org/) | Ambient TV lighting |
+| <img src="https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/png/glance.png" width="32" height="32"> | [Glance](https://github.com/glanceapp/glance) | Dashboard of my services |
 
-The repository mimics a standard enterprise monorepo structure, separating concerns between infrastructure, cluster definition, and applications.
+### AI
+
+| | App | What it does |
+| :---: | :--- | :--- |
+| <img src="https://cdn.jsdelivr.net/gh/selfhst/icons/png/hermes-agent.png" width="32" height="32"> | [Hermes Agent](https://github.com/NousResearch/hermes-agent) | Personal agent I talk to through Telegram |
+
+### Media
+
+| | App | What it does |
+| :---: | :--- | :--- |
+| <img src="https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/png/jellyfin.png" width="32" height="32"> | [Jellyfin](https://jellyfin.org/) | Media server |
+
+## Decisions and trade-offs
+
+- **Bare metal, no Proxmox.** The three mini PCs have 16 GB each, and I didn't want to give up RAM to a hypervisor. The cost: no snapshots of whole nodes, and a node failure means reinstalling it with Ansible.
+- **Public repo plus private repo.** Flux reads both, so infrastructure and open-source apps are public and personal workloads are not. The cost: part of the cluster can't be read from this repo.
+- **Cloudflare Tunnel for public services, Tailscale for the rest.** No port forwarding on the router. Admin UIs are never public. The cost: tunnel routes are configured in the Cloudflare panel, not in Git.
+- **Longhorn on mini PCs.** Replicated volumes survive the loss of one node and give me backups to Azure. The cost: higher disk and network load, and a degraded volume while a node is down.
+- **Key Vault plus External Secrets.** Secret values stay out of Git and have a single source. The cost: several secrets are still created by hand in Key Vault, and a Service Principal secret must be added manually at bootstrap.
+
+## Known limits
+
+- Single control plane. If it fails, workloads keep running but I can't change the cluster until it's back.
+- Backups go to a single offsite location, on a schedule, keeping the last three copies. That's not a full 3-2-1 strategy. Some volumes are not backed up yet.
+- State is spread over places outside Git: tunnel routes, Tailscale, some Key Vault secrets, the Hermes volume. A rebuild is documented but not tested end to end.
+- The Kubernetes project retired Ingress NGINX in March 2026. Migrating to Gateway API or another controller is on my list.
+- Cilium egress policies based on domain names (`toFQDNs`) don't work in this cluster yet, so egress is limited by IP ranges only.
+
+## Repository layout
 
 ```text
-├── 📂 ansible/        # Ansible playbooks for OS provisioning and K3s installation
-├── 📂 apps/           # Application manifests (Base, Staging, Production overlays)
-├── 📂 clusters/       # Flux Cluster definitions (entry point for GitOps)
-├── 📂 infrastructure/ # Infrastructure components (Ingress, Cert-Manager, Cilium)
-├── 📂 monitoring/     # Observability stack (Prometheus, Grafana)
-└── 📂 terraform/      # Cloud Infrastructure as Code (Azure)
+ansible/          OS setup, K3s install, node maintenance
+apps/             App manifests: base + staging / production overlays
+clusters/main/    Flux entry point and dependency order
+infrastructure/   Cluster controllers and their configs
+monitoring/       Prometheus and Grafana stack
+terraform/        Azure: storage, Key Vault, Entra apps (two stacks)
+.github/          CI: build all kustomizations on pull requests
+renovate.json     Dependency update rules
+mise.toml         Tool versions used on my workstation
 ```
 
-## 💻 Hardware
+## Rebuild from scratch
 
-The cluster is composed of 3 **Dell Optiplex 7040 Micro** mini PCs. These units offer a perfect balance of performance and power efficiency for a 24/7 homelab environment.
-
-| Node | Model | CPU | RAM | OS | Role |
-| :--- | :--- | :--- | :--- | :--- | :--- |
-| **k8s-cp** | Optiplex 7040 | i5-6600T | 16GB | Debian | Control Plane |
-| **k8s-wp** | Optiplex 7040 | i5-6600T | 16GB | Debian | Worker (Primary Storage) |
-| **k8s-ws** | Optiplex 7040 | i5-6600T | 16GB | Debian | Worker |
-
-## 🚀 Technology Stack
-
-This project leverages a modern Cloud Native stack to ensure performance, security, and observability.
-
-### Cloud & Infrastructure as Code
-
-| Logo | Technology | Purpose |
-| :---: | :--- | :--- |
-| <img src="https://cdn.simpleicons.org/terraform" width="40"> | [**Terraform**](https://www.terraform.io/) | **Infrastructure as Code.** Provisions and manages Azure resources (Key Vault, IAM, Storage) to ensure a reproducible cloud environment. |
-| <img src="https://avatars.githubusercontent.com/u/6844498?s=200&v=4" width="40"> | [**Microsoft Azure**](https://azure.microsoft.com/) | **Cloud Provider.** Hosts Key Vault for secrets, Entra ID for OAuth, and Blob Storage for offsite backups. |
-| <img src="https://cdn.simpleicons.org/ansible" width="40"> | [**Ansible**](https://www.ansible.com/) | **Configuration Management.** Automates the provisioning and hardening of the bare metal Debian servers. |
-
-### Infrastructure & Networking
-
-| Logo | Technology | Purpose |
-| :---: | :--- | :--- |
-| <img src="https://raw.githubusercontent.com/external-secrets/external-secrets/main/assets/eso-logo-large.png" width="40"> | [**External Secrets**](https://external-secrets.io/) | **Secret Management.** Bridges the gap between Azure Key Vault and Kubernetes, syncing cloud secrets into the cluster securely. |
-| <img src="https://cdn.simpleicons.org/cilium" width="40"> | [**Cilium**](https://cilium.io/) | **CNI & Security.** Uses eBPF for high-performance networking and L2 announcements. |
-| <img src="https://cdn.simpleicons.org/flux" width="40"> | [**Flux**](https://fluxcd.io/) | **GitOps.** Automates deployment and lifecycle management. |
-| <img src="https://cdn.simpleicons.org/nginx" width="40"> | [**Ingress NGINX**](https://kubernetes.github.io/ingress-nginx/) | **Ingress Controller.** Handles internal HTTP/HTTPS routing. |
-| <img src="https://cdn.jsdelivr.net/gh/selfhst/icons@main/svg/oauth2-proxy.svg" width="40"> | [**OAuth2 Proxy**](https://oauth2-proxy.github.io/oauth2-proxy/) | **Identity & Access.** Integrated with **Microsoft Entra ID** to provide secure OIDC authentication for internal services. |
-| <img src="https://cdn.simpleicons.org/cloudflare" width="40"> | [**Cloudflare Zero Trust**](https://www.cloudflare.com/products/zero-trust/) | **Security & Access.** Provides secure access to internal applications and the cluster without a VPN. |
-| <img src="https://raw.githubusercontent.com/cert-manager/cert-manager/master/logo/logo-small.png" width="40"> | [**Cert-Manager**](https://cert-manager.io/) | **Security.** Automates issuance and renewal of Let's Encrypt SSL certificates. |
-| <img src="https://cdn.simpleicons.org/kubernetes" width="40"> | [**ExternalDNS**](https://github.com/kubernetes-sigs/external-dns) | **DNS Automation.** Synchronizes exposed Kubernetes services and ingresses with DNS providers. |
-
-### Storage & Observability
-
-| Logo | Technology | Purpose |
-| :---: | :--- | :--- |
-| <img src="https://avatars.githubusercontent.com/u/51335366?s=200&v=4" width="40"> | [**Longhorn**](https://longhorn.io/) | **Distributed Block Storage.** Provides highly available persistent storage with automated offsite backups to Azure. |
-| <img src="https://cdn.simpleicons.org/prometheus" width="40"> | [**Prometheus**](https://prometheus.io/) | **Metrics.** Scrapes and stores metrics from all cluster components. |
-| <img src="https://cdn.simpleicons.org/grafana" width="40"> | [**Grafana**](https://grafana.com/) | **Visualization.** Dashboards for monitoring cluster health and performance. |
-| <img src="https://avatars.githubusercontent.com/u/38656520?s=200&v=4" width="40"> | [**Renovate**](https://renovatebot.com/) | **Automation.** Automatically creates Pull Requests to update dependencies. |
-
-## 📱 Applications
-
-| Logo | Application | Description |
-| :---: | :--- | :--- |
-| <img src="https://dariomazza.net/favicon.ico" width="40"> | [**Portfolio**](https://dariomazza.net) | My personal developer portfolio and resume site. |
-| <img src="https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/png/glance.png" width="40"> | [**Glance**](https://github.com/glance-launcher/glance) | A self-hosted dashboard that puts all your services in one place. |
-| <img src="https://cdn.jsdelivr.net/gh/selfhst/icons@main/svg/oauth2-proxy.svg" width="40"> | [**OAuth2 Proxy**](https://auth.dariomazza.net) | Secure gateway for internal applications using Microsoft Entra ID. |
-| <img src="https://docs.vocard.xyz/2.7.2/assets/logo.png" width="40"> | [**Vocard**](https://github.com/ChocoMeow/Vocard-Dashboard) | A feature-rich Discord music bot. Its microservices stack includes **Lavalink** for audio processing and **MongoDB** for data persistence. |
-
-## ⚡ Bootstrap & Disaster Recovery
-
-This cluster is designed to be fully reproducible. In case of a catastrophic failure, it can be rebuilt from scratch using the following steps.
-
-1.  **Provision Hardware & K3s:**
-    Using the Ansible playbooks located in `ansible/`, we install dependencies, harden the OS, and install K3s.
-    ```bash
-    ansible-galaxy install -r ansible/requirements.yml
-    ansible-playbook -i ansible/inventory.ini ansible/site.yml
-    ```
-
-2.  **Bootstrap Flux:**
-    Flux is installed on the cluster and pointed to this repository.
-    ```bash
-    flux bootstrap github \
-      --owner=$GITHUB_USER \
-      --repository=homelab \
-      --path=clusters/main \
-      --personal
-    ```
-
-3.  **Configure Secret Access:**
-    The Azure Service Principal credentials must be manually added to the cluster to allow the External Secrets Operator to authenticate with Azure Key Vault.
-    ```bash
-    kubectl create secret generic azure-secret-sp \
-      --namespace external-secrets \
-      --from-literal=client-id=$AZURE_CLIENT_ID \
-      --from-literal=client-secret=$AZURE_CLIENT_SECRET
-    ```
-
----
-
-*This project is constantly evolving. Feel free to explore the code to see how I handle specific challenges!*
+1. **Azure:** apply the Terraform stacks `foundation`, then `security`. Add the secrets that Terraform doesn't create to Key Vault.
+2. **Nodes:** `ansible-galaxy install -r ansible/requirements.yml`, then `ansible-playbook -i ansible/inventory.ini ansible/site.yml`.
+3. **Flux:** bootstrap it on `clusters/main` of this repo and add the deploy key for the private repo.
+   ```bash
+   flux bootstrap github --owner=$GITHUB_USER --repository=homelab --path=clusters/main --personal
+   ```
+4. **External Secrets:** create the Service Principal secret once, by hand.
+   ```bash
+   kubectl create secret generic azure-secret-sp \
+     --namespace external-secrets \
+     --from-literal=client-id=$AZURE_CLIENT_ID \
+     --from-literal=client-secret=$AZURE_CLIENT_SECRET
+   ```
+5. **Restore data:** restore volumes from Longhorn backups in Azure.

@@ -38,6 +38,9 @@ spec:
               value: "1"
             - name: PAPERLESS_TASK_WORKERS
               value: "1"
+            # Tika and Gotenberg sidecars on the default localhost ports
+            - name: PAPERLESS_TIKA_ENABLED
+              value: "true"
           envFrom:
             - secretRef:
                 name: paperless
@@ -78,6 +81,31 @@ spec:
               memory: 64Mi
             limits:
               memory: 256Mi
+        - name: tika
+          image: docker.io/apache/tika:3.3.1.0
+          securityContext:
+            allowPrivilegeEscalation: false
+          resources:
+            requests:
+              cpu: 20m
+              memory: 256Mi
+            limits:
+              memory: 1Gi
+        - name: gotenberg
+          image: docker.io/gotenberg/gotenberg:8.38
+          # Chromium route converts .eml: block JS and remote content
+          args:
+            - gotenberg
+            - --chromium-disable-javascript=true
+            - --chromium-allow-list=^file:///tmp/.*
+          securityContext:
+            allowPrivilegeEscalation: false
+          resources:
+            requests:
+              cpu: 20m
+              memory: 128Mi
+            limits:
+              memory: 1Gi
       volumes:
         - name: data
           persistentVolumeClaim:

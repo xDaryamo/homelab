@@ -1,0 +1,85 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: paperless-gpt
+  labels:
+    app: paperless-gpt
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: paperless-gpt
+  template:
+    metadata:
+      labels:
+        app: paperless-gpt
+    spec:
+      automountServiceAccountToken: false
+      # Service named "paperless" would inject PAPERLESS_PORT and friends
+      enableServiceLinks: false
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 10001
+        runAsGroup: 10001
+        fsGroup: 10001
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: paperless-gpt
+          image: ghcr.io/icereed/paperless-gpt:v0.31.0
+          env:
+            - name: PAPERLESS_BASE_URL
+              value: http://paperless:8000
+            - name: PAPERLESS_PUBLIC_URL
+              value: https://paperless.dariomazza.net
+            # LM Studio on the workstation, OpenAI-compatible API
+            - name: LLM_PROVIDER
+              value: openai
+            - name: OPENAI_BASE_URL
+              value: http://192.168.1.38:1234/v1
+            # Not a secret: LM Studio ignores it
+            - name: OPENAI_API_KEY
+              value: lm-studio
+            - name: LLM_MODEL
+              value: qwen3.6-35b-a3b-mtp
+            # Prompts stay in English, output in Italian
+            - name: LLM_LANGUAGE
+              value: Italian
+            # Required by the default OCR provider; OCR only runs on its own tag
+            - name: VISION_LLM_PROVIDER
+              value: openai
+            - name: VISION_LLM_MODEL
+              value: qwen3.6-35b-a3b-mtp
+            - name: PRESERVE_EXISTING_METADATA
+              value: "true"
+          envFrom:
+            - secretRef:
+                name: paperless-gpt
+          ports:
+            - containerPort: 8080
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: ["ALL"]
+          volumeMounts:
+            - name: data
+              mountPath: /app/prompts
+              subPath: prompts
+            - name: data
+              mountPath: /app/config
+              subPath: config
+            - name: data
+              mountPath: /app/db
+              subPath: db
+          resources:
+            requests:
+              cpu: 10m
+              memory: 64Mi
+            limits:
+              memory: 512Mi
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: paperless-gpt-data

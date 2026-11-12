@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: paperless-gpt
+spec:
+  selector:
+    app: paperless-gpt
+  ports:
+    - port: 8080
+      targetPort: 8080

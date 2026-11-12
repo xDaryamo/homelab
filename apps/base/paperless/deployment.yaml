@@ -41,6 +41,8 @@ spec:
             # Tika and Gotenberg sidecars on the default localhost ports
             - name: PAPERLESS_TIKA_ENABLED
               value: "true"
+            - name: PAPERLESS_PRE_CONSUME_SCRIPT
+              value: /scripts/pre-consume.py
           envFrom:
             - secretRef:
                 name: paperless
@@ -63,6 +65,8 @@ spec:
               subPath: media
             - name: consume
               mountPath: /usr/src/paperless/consume
+            - name: scripts
+              mountPath: /scripts
           resources:
             requests:
               cpu: 250m
@@ -112,3 +116,7 @@ spec:
             claimName: paperless-data
         - name: consume
           emptyDir: {}
+        - name: scripts
+          configMap:
+            name: paperless-scripts
+            defaultMode: 0755

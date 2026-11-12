@@ -4,3 +4,7 @@ resources:
   - deployment.yaml
   - pvc.yaml
   - service.yaml
+configMapGenerator:
+  - name: paperless-scripts
+    files:
+      - pre-consume.py

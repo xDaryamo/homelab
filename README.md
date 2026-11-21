@@ -59,6 +59,8 @@ The diagram is drawn with [Excalidraw](https://excalidraw.com/); the editable so
 | :---: | :--- | :--- |
 | <img src="https://dariomazza.net/favicon.ico" width="32" height="32"> | [Portfolio](https://dariomazza.net) | My own site: portfolio and resume, with a staging copy |
 | <img src="https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/png/sure.png" width="32" height="32"> | [Sure](https://github.com/we-promise/sure) | Personal finance |
+| <img src="https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/png/paperless-ngx.png" width="32" height="32"> | [Paperless-ngx](https://github.com/paperless-ngx/paperless-ngx) | Scanned documents, with OCR, Tika and Gotenberg |
+| <img src="https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/png/paperless-ngx.png" width="32" height="32"> | [paperless-gpt](https://github.com/icereed/paperless-gpt) | LLM titles and tags for Paperless documents, behind OAuth2 Proxy |
 | <img src="https://cdn.jsdelivr.net/gh/selfhst/icons/png/opengym.png" width="32" height="32"> | [OpenGym](https://gitlab.com/duartesantos8/opengym) | Workout logbook |
 | <img src="https://cdn.jsdelivr.net/gh/selfhst/icons/png/vocard.png" width="32" height="32"> | [Vocard](https://github.com/ChocoMeow/Vocard-Dashboard) | Discord music bot, with Lavalink and MongoDB |
 | <img src="https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/png/telegram.png" width="32" height="32"> | [subito-it-searcher](https://github.com/xDaryamo/subito-it-searcher) | My fork, customized for my needs: Telegram bot that alerts me about new marketplace listings |
